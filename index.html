@@ -71,12 +71,18 @@
     color: inherit;
   }
   footer .logo-name { color: #fff; }
-  /* Logo mark image (icon only — cropped from full logo file) */
-  .logo-img-mark { display: block; width: auto; filter: invert(1); }
-  .logo-img-mark.nav    { height: 32px; }
-  .logo-img-mark.footer { height: 48px; }
+  /* Logo mark image (icon only — cropped from full logo file)
+     filter: invert(1) flips colors so the black mark reads white on dark backgrounds.
+     mix-blend-mode: screen makes the now-black background drop out, so no visible box. */
+  .logo-img-mark {
+    display: block; width: auto;
+    filter: invert(1);
+    mix-blend-mode: screen;
+  }
+  .logo-img-mark.nav    { height: 40px; }
+  .logo-img-mark.footer { height: 56px; }
   @media (max-width: 820px) {
-    .logo-img-mark.nav { height: 28px; }
+    .logo-img-mark.nav { height: 32px; }
   }
   .nav-links { display: flex; gap: 32px; align-items: center; }
   .nav-links a { font-size: 0.95rem; color: #d4d4d4; font-weight: 500; }
