@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Site Admin — Double-Sided Epoxy Flooring</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #dcdcdc; color: #1f1f1f; line-height: 1.5;
+    min-height: 100vh;
+  }
+  a { color: inherit; }
+
+  /* ---------- Gate ---------- */
+  .gate {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .gate-card {
+    background: #fff; padding: 48px 40px;
+    max-width: 420px; width: 100%;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+  }
+  .gate-card h1 {
+    font-size: 1.6rem; font-weight: 800; margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .gate-card p { color: #555; font-size: 0.92rem; margin: 0 0 24px; }
+  .gate-card input {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid #ddd; border-radius: 4px;
+    font-size: 1rem; font-family: inherit;
+    margin-bottom: 14px;
+  }
+  .gate-card input:focus { outline: none; border-color: #1f1f1f; }
+  .gate-card button {
+    width: 100%; padding: 14px;
+    background: #1f1f1f; color: #dfff5a;
+    border: none; border-radius: 4px;
+    font-family: inherit; font-weight: 600; font-size: 0.95rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .gate-card button:hover { background: #0d0d0d; }
+  .gate-err { color: #c33; font-size: 0.9rem; margin-top: 10px; min-height: 1.2em; }
+
+  /* ---------- Panel ---------- */
+  .panel { display: none; }
+  .panel.show { display: block; }
+
+  .topbar {
+    background: #1f1f1f; color: #fff;
+    padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 14px;
+  }
+  .topbar h1 {
+    margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .topbar h1 span { color: #dfff5a; }
+  .topbar .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 18px; border: none; border-radius: 4px;
+    font-family: inherit; font-weight: 600; font-size: 0.88rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em;
+    transition: background 0.15s ease;
+  }
+  .btn-yellow { background: #dfff5a; color: #1f1f1f; }
+  .btn-yellow:hover { background: #c9e84a; }
+  .btn-outline {
+    background: transparent; color: #fff; border: 1.5px solid #555;
+  }
+  .btn-outline:hover { border-color: #dfff5a; color: #dfff5a; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .notice {
+    background: #fff8d6; color: #5a4a00;
+    border-left: 4px solid #f5d000;
+    padding: 14px 20px; font-size: 0.88rem;
+    margin: 0;
+  }
+  .notice strong { font-weight: 700; }
+
+  .container { max-width: 1080px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .tabs {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    border-bottom: 2px solid #c4c4c4; margin-bottom: 32px;
+  }
+  .tab {
+    padding: 14px 22px;
+    background: none; border: none;
+    font-family: inherit; font-size: 0.92rem; font-weight: 600;
+    cursor: pointer; color: #555;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .tab:hover { color: #1f1f1f; }
+  .tab.active { color: #1f1f1f; border-bottom-color: #1f1f1f; }
+
+  .tab-pane { display: none; }
+  .tab-pane.show { display: block; }
+
+  .field-group {
+    background: #fff; padding: 28px; margin-bottom: 16px;
+  }
+  .field-group h3 {
+    margin: 0 0 18px; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .field-group h3 .num {
+    display: inline-block; background: #1f1f1f; color: #dfff5a;
+    padding: 2px 10px; margin-right: 10px; font-size: 0.8rem;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 0.85rem; font-weight: 600;
+    color: #333; margin-bottom: 6px;
+  }
+  .field .hint {
+    color: #888; font-size: 0.78rem; font-weight: 400; margin-left: 6px;
+  }
+  .field input, .field textarea {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid #ddd; border-radius: 4px;
+    font-family: inherit; font-size: 0.96rem; color: #1f1f1f;
+    background: #fafafa;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none; border-color: #1f1f1f; background: #fff;
+  }
+  .field textarea { resize: vertical; min-height: 90px; }
+
+  .footer-actions {
+    position: sticky; bottom: 0;
+    background: rgba(220,220,220,0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 16px 0;
+    border-top: 1px solid #b8b8b8;
+    margin-top: 32px;
+  }
+  .footer-actions .container {
+    padding-top: 0; padding-bottom: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .save-status { font-size: 0.85rem; color: #555; }
+  .save-status.saved { color: #1c7a4a; }
+
+  .btn-large {
+    padding: 14px 26px; font-size: 0.95rem;
+  }
+  .btn-primary { background: #1f1f1f; color: #dfff5a; }
+  .btn-primary:hover { background: #0d0d0d; }
+
+  .feature-list-hint {
+    color: #888; font-size: 0.78rem; margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ GATE ============ -->
+<div class="gate" id="gate">
+  <form class="gate-card" id="loginForm" autocomplete="off">
+    <div style="width:56px; height:56px; color:#1f1f1f; margin-bottom:18px;">
+      <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg" fill="currentColor" style="width:100%; height:100%;">
+        <path d="M 8 8 L 8 82 L 48 82 C 75 82 90 65 90 45 C 90 25 75 8 48 8 Z M 22 22 L 22 68 L 47 68 C 66 68 76 60 76 45 C 76 30 66 22 47 22 Z" fill-rule="evenodd"/>
+        <path d="M 32 30 L 32 60 L 50 60 C 62 60 70 54 70 45 C 70 36 62 30 50 30 Z M 40 38 L 40 52 L 48 52 C 54 52 58 49 58 45 C 58 41 54 38 48 38 Z" fill-rule="evenodd"/>
+        <path d="M 32 45 L 22 45 L 22 41 L 32 41 Z"/>
+      </svg>
+    </div>
+    <h1>Site Admin</h1>
+    <p>Double-Sided ISCM LLC · Enter password to edit your site.</p>
+    <input type="password" id="passwordInput" placeholder="Password" autofocus required />
+    <button type="submit">Unlock</button>
+    <div class="gate-err" id="loginError"></div>
+  </form>
+</div>
+
+<!-- ============ PANEL ============ -->
+<div class="panel" id="adminPanel">
+  <header class="topbar">
+    <h1 style="display:flex; align-items:center; gap:12px;">
+      <span style="width:32px; height:32px; color:#dfff5a; flex-shrink:0;">
+        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg" fill="currentColor" style="width:100%; height:100%;">
+          <path d="M 8 8 L 8 82 L 48 82 C 75 82 90 65 90 45 C 90 25 75 8 48 8 Z M 22 22 L 22 68 L 47 68 C 66 68 76 60 76 45 C 76 30 66 22 47 22 Z" fill-rule="evenodd"/>
+          <path d="M 32 30 L 32 60 L 50 60 C 62 60 70 54 70 45 C 70 36 62 30 50 30 Z M 40 38 L 40 52 L 48 52 C 54 52 58 49 58 45 C 58 41 54 38 48 38 Z" fill-rule="evenodd"/>
+          <path d="M 32 45 L 22 45 L 22 41 L 32 41 Z"/>
+        </svg>
+      </span>
+      <span style="display:flex; flex-direction:column; gap:2px; line-height:1;">
+        <span style="font-size:1.05rem; font-weight:700;">Double-Sided</span>
+        <span style="font-size:0.62rem; font-weight:500; letter-spacing:0.16em; color:#888; text-transform:uppercase;">ISCM LLC · Admin</span>
+      </span>
+    </h1>
+    <div class="actions">
+      <button class="btn btn-outline" id="resetBtn" type="button">Reset</button>
+      <button class="btn btn-outline" id="saveBtn" type="button">Save Progress</button>
+      <button class="btn btn-yellow" id="generateBtn" type="button">Generate Updated Site</button>
+    </div>
+  </header>
+
+  <div class="notice">
+    <strong>How to publish:</strong> Edit fields below → click <em>Generate Updated Site</em> → a new <code>index.html</code> downloads. Replace your hosted <code>index.html</code> with that file. Your changes are saved to this browser as you type.
+  </div>
+
+  <div class="container">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="contact" type="button">Contact</button>
+      <button class="tab" data-tab="social" type="button">Social</button>
+      <button class="tab" data-tab="pricing" type="button">Pricing</button>
+      <button class="tab" data-tab="faq" type="button">FAQ</button>
+      <button class="tab" data-tab="testimonials" type="button">Testimonials</button>
+    </div>
+
+    <!-- ===== Contact ===== -->
+    <div class="tab-pane show" id="pane-contact">
+      <div class="field-group">
+        <h3>Business Information</h3>
+        <div class="field">
+          <label>Business Name <span class="hint">— appears in nav, footer, page title</span></label>
+          <input type="text" data-bind="businessName" />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Phone Number</label>
+            <input type="tel" data-bind="phone" />
+          </div>
+          <div class="field">
+            <label>Email Address</label>
+            <input type="email" data-bind="email" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Service Area</label>
+          <input type="text" data-bind="serviceArea" />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Hours — Weekdays</label>
+            <input type="text" data-bind="hoursWeek" />
+          </div>
+          <div class="field">
+            <label>Hours — Sunday</label>
+            <input type="text" data-bind="hoursSunday" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Social ===== -->
+    <div class="tab-pane" id="pane-social">
+      <div class="field-group">
+        <h3>Social Media Links</h3>
+        <div class="field">
+          <label>Facebook URL <span class="hint">— e.g., https://facebook.com/yourpage</span></label>
+          <input type="url" data-bind="social.facebook" placeholder="https://facebook.com/..." />
+        </div>
+        <div class="field">
+          <label>WhatsApp <span class="hint">— include country code, e.g., +14695347986 or https://wa.me/14695347986</span></label>
+          <input type="text" data-bind="social.whatsapp" placeholder="https://wa.me/14695347986" />
+        </div>
+        <div class="field">
+          <label>WeChat ID <span class="hint">— shown in the popover on hover</span></label>
+          <input type="text" data-bind="social.wechatId" placeholder="your-wechat-id" />
+        </div>
+        <div class="field">
+          <label>Instagram URL</label>
+          <input type="url" data-bind="social.instagram" placeholder="https://instagram.com/..." />
+        </div>
+        <div class="field">
+          <label>TikTok URL</label>
+          <input type="url" data-bind="social.tiktok" placeholder="https://tiktok.com/@..." />
+        </div>
+        <div class="field">
+          <label>YouTube URL</label>
+          <input type="url" data-bind="social.youtube" placeholder="https://youtube.com/@..." />
+        </div>
+        <div class="field">
+          <label>X (Twitter) URL</label>
+          <input type="url" data-bind="social.x" placeholder="https://x.com/..." />
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Pricing ===== -->
+    <div class="tab-pane" id="pane-pricing">
+      <div id="pricingTiers"></div>
+    </div>
+
+    <!-- ===== FAQ ===== -->
+    <div class="tab-pane" id="pane-faq">
+      <div id="faqItems"></div>
+    </div>
+
+    <!-- ===== Testimonials ===== -->
+    <div class="tab-pane" id="pane-testimonials">
+      <div id="testimonialItems"></div>
+    </div>
+
+  </div>
+
+  <div class="footer-actions">
+    <div class="container">
+      <div class="save-status" id="saveStatus">Loading…</div>
+      <button class="btn btn-primary btn-large" id="generateBtnBottom" type="button">Generate Updated Site →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  //  CONFIG — change ADMIN_PASSWORD to whatever you want.
+  //  This is client-side only — anyone reading the HTML can see
+  //  it. Use it as a casual lock, not real security.
+  // ============================================================
+  var ADMIN_PASSWORD = "admin123";
+  var STORAGE_KEY = "epoxyAdminDraft_v1";
+
+  // ============================================================
+  //  Gate
+  // ============================================================
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var input = document.getElementById("passwordInput").value;
+    var err = document.getElementById("loginError");
+    if (input === ADMIN_PASSWORD) {
+      err.textContent = "";
+      document.getElementById("gate").style.display = "none";
+      document.getElementById("adminPanel").classList.add("show");
+      bootAdmin();
+    } else {
+      err.textContent = "Wrong password.";
+    }
+  });
+
+  // ============================================================
+  //  Tabs
+  // ============================================================
+  document.querySelectorAll(".tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".tab-pane").forEach(function (p) { p.classList.remove("show"); });
+      btn.classList.add("active");
+      document.getElementById("pane-" + btn.dataset.tab).classList.add("show");
+    });
+  });
+
+  // ============================================================
+  //  Boot — load index.html, extract current values, build forms
+  // ============================================================
+  var originalHTML = null;
+  var originalDoc = null;
+  var pricingData = [];
+  var faqData = [];
+  var testimonialData = [];
+
+  function bootAdmin() {
+    fetch("index.html", { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function (text) {
+        originalHTML = text;
+        originalDoc = new DOMParser().parseFromString(text, "text/html");
+        extractAllValues();
+        buildPricingForm();
+        buildFAQForm();
+        buildTestimonialsForm();
+        loadDraftFromStorage();
+        wireAutoSave();
+        setStatus("Loaded. Edits auto-save to this browser.", "saved");
+      })
+      .catch(function (err) {
+        setStatus("Could not load index.html: " + err.message + ". Make sure admin.html sits next to index.html.", "");
+        alert("Couldn't load index.html. Make sure admin.html and index.html are in the same folder, and you're accessing this page through a web server (not a local file://). Most static hosts work automatically.");
+      });
+  }
+
+  // ============================================================
+  //  Extract current values from parsed index.html
+  // ============================================================
+  function extractAllValues() {
+    setBind("businessName", textOf(originalDoc.querySelector('[data-edit="businessName"] span:last-child')) || "Double-Sided Epoxy");
+    setBind("phone", textOf(originalDoc.querySelector('a[href^="tel:"]')) || "");
+    setBind("email", textOf(originalDoc.querySelector('a[href^="mailto:"]')) || "");
+    setBind("serviceArea", textOf(originalDoc.querySelector('[data-edit="serviceArea"]')) || "");
+    setBind("hoursWeek", textOf(originalDoc.querySelector('[data-edit="hoursWeek"]')) || "");
+    setBind("hoursSunday", textOf(originalDoc.querySelector('[data-edit="hoursSunday"]')) || "");
+
+    // Social — read from contact section instances (preferred over footer)
+    ["facebook", "whatsapp", "wechat", "instagram", "tiktok", "youtube", "x"].forEach(function (key) {
+      var el = originalDoc.querySelector('[data-social="' + key + '"]');
+      if (el) setBind("social." + key, el.getAttribute("href") || "");
+    });
+    var wechatId = originalDoc.querySelector('[data-wechat-id]');
+    if (wechatId) setBind("social.wechatId", textOf(wechatId));
+
+    // Pricing
+    originalDoc.querySelectorAll(".price-card").forEach(function (card, i) {
+      pricingData.push({
+        name: textOf(card.querySelector("h3")),
+        amount: textOf(card.querySelector(".price-amount")),
+        unit: textOf(card.querySelector(".price-unit")),
+        features: Array.prototype.map.call(card.querySelectorAll("ul li"), function (li) { return textOf(li); }).join("\n")
+      });
+    });
+
+    // FAQ
+    originalDoc.querySelectorAll(".faq-item").forEach(function (item) {
+      faqData.push({
+        question: textOf(item.querySelector(".faq-q span")),
+        answer: textOf(item.querySelector(".faq-a-inner"))
+      });
+    });
+
+    // Testimonials
+    originalDoc.querySelectorAll(".testimonial").forEach(function (t) {
+      testimonialData.push({
+        quote: textOf(t.querySelector("blockquote")),
+        name: textOf(t.querySelector(".author-name")),
+        location: textOf(t.querySelector(".author-loc"))
+      });
+    });
+  }
+
+  function textOf(el) { return el ? el.textContent.replace(/\s+/g, " ").trim() : ""; }
+
+  function setBind(key, value) {
+    var el = document.querySelector('[data-bind="' + key + '"]');
+    if (el) {
+      el.value = value;
+      el.dataset.original = value;
+    }
+  }
+
+  function getBind(key) {
+    var el = document.querySelector('[data-bind="' + key + '"]');
+    return el ? el.value : "";
+  }
+
+  // ============================================================
+  //  Build dynamic forms (pricing, FAQ, testimonials)
+  // ============================================================
+  function buildPricingForm() {
+    var wrap = document.getElementById("pricingTiers");
+    wrap.innerHTML = "";
+    pricingData.forEach(function (tier, i) {
+      var g = document.createElement("div");
+      g.className = "field-group";
+      g.innerHTML = ''
+        + '<h3><span class="num">Tier ' + (i + 1) + '</span></h3>'
+        + '<div class="grid-2">'
+        + '  <div class="field"><label>Tier Name</label><input type="text" data-pricing="' + i + '.name" value="' + esc(tier.name) + '"></div>'
+        + '  <div class="field"><label>Price</label><input type="text" data-pricing="' + i + '.amount" value="' + esc(tier.amount) + '"></div>'
+        + '</div>'
+        + '<div class="field"><label>Price Unit Text <span class="hint">— e.g., "per sq ft (starting)"</span></label><input type="text" data-pricing="' + i + '.unit" value="' + esc(tier.unit) + '"></div>'
+        + '<div class="field"><label>Features <span class="hint">— one per line</span></label><textarea data-pricing="' + i + '.features" rows="6">' + esc(tier.features) + '</textarea></div>';
+      wrap.appendChild(g);
+    });
+  }
+
+  function buildFAQForm() {
+    var wrap = document.getElementById("faqItems");
+    wrap.innerHTML = "";
+    faqData.forEach(function (faq, i) {
+      var g = document.createElement("div");
+      g.className = "field-group";
+      g.innerHTML = ''
+        + '<h3><span class="num">Q' + (i + 1) + '</span></h3>'
+        + '<div class="field"><label>Question</label><input type="text" data-faq="' + i + '.question" value="' + esc(faq.question) + '"></div>'
+        + '<div class="field"><label>Answer</label><textarea data-faq="' + i + '.answer" rows="5">' + esc(faq.answer) + '</textarea></div>';
+      wrap.appendChild(g);
+    });
+  }
+
+  function buildTestimonialsForm() {
+    var wrap = document.getElementById("testimonialItems");
+    wrap.innerHTML = "";
+    testimonialData.forEach(function (t, i) {
+      var g = document.createElement("div");
+      g.className = "field-group";
+      g.innerHTML = ''
+        + '<h3><span class="num">Review ' + (i + 1) + '</span></h3>'
+        + '<div class="field"><label>Quote</label><textarea data-test="' + i + '.quote" rows="3">' + esc(t.quote) + '</textarea></div>'
+        + '<div class="grid-2">'
+        + '  <div class="field"><label>Customer Name</label><input type="text" data-test="' + i + '.name" value="' + esc(t.name) + '"></div>'
+        + '  <div class="field"><label>Location</label><input type="text" data-test="' + i + '.location" value="' + esc(t.location) + '"></div>'
+        + '</div>';
+      wrap.appendChild(g);
+    });
+  }
+
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // ============================================================
+  //  LocalStorage persistence
+  // ============================================================
+  function wireAutoSave() {
+    document.querySelectorAll("input, textarea").forEach(function (el) {
+      if (el.id === "passwordInput") return;
+      el.addEventListener("input", debounce(saveDraft, 400));
+    });
+    document.getElementById("saveBtn").addEventListener("click", function () {
+      saveDraft();
+      setStatus("Saved to this browser.", "saved");
+    });
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      if (confirm("Discard all unsaved edits and reload current site values?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    });
+  }
+
+  function collectDraft() {
+    var draft = {};
+    document.querySelectorAll("[data-bind], [data-pricing], [data-faq], [data-test]").forEach(function (el) {
+      var key = el.dataset.bind || ("p:" + el.dataset.pricing) || ("f:" + el.dataset.faq) || ("t:" + el.dataset.test);
+      if (el.dataset.pricing) key = "p:" + el.dataset.pricing;
+      if (el.dataset.faq) key = "f:" + el.dataset.faq;
+      if (el.dataset.test) key = "t:" + el.dataset.test;
+      draft[key] = el.value;
+    });
+    return draft;
+  }
+
+  function saveDraft() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectDraft()));
+      setStatus("Auto-saved to this browser.", "saved");
+    } catch (e) {
+      setStatus("Couldn't save to localStorage: " + e.message, "");
+    }
+  }
+
+  function loadDraftFromStorage() {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      var draft = JSON.parse(raw);
+      Object.keys(draft).forEach(function (key) {
+        var el;
+        if (key.indexOf("p:") === 0) el = document.querySelector('[data-pricing="' + key.slice(2) + '"]');
+        else if (key.indexOf("f:") === 0) el = document.querySelector('[data-faq="' + key.slice(2) + '"]');
+        else if (key.indexOf("t:") === 0) el = document.querySelector('[data-test="' + key.slice(2) + '"]');
+        else el = document.querySelector('[data-bind="' + key + '"]');
+        if (el) el.value = draft[key];
+      });
+    } catch (e) { /* ignore corrupt draft */ }
+  }
+
+  function debounce(fn, ms) {
+    var t;
+    return function () {
+      clearTimeout(t);
+      t = setTimeout(fn, ms);
+    };
+  }
+
+  function setStatus(msg, cls) {
+    var el = document.getElementById("saveStatus");
+    el.textContent = msg;
+    el.className = "save-status" + (cls ? " " + cls : "");
+  }
+
+  // ============================================================
+  //  Generate updated index.html
+  // ============================================================
+  document.getElementById("generateBtn").addEventListener("click", generateAndDownload);
+  document.getElementById("generateBtnBottom").addEventListener("click", generateAndDownload);
+
+  function generateAndDownload() {
+    if (!originalHTML) {
+      alert("index.html hasn't loaded yet. Please wait.");
+      return;
+    }
+    var doc = new DOMParser().parseFromString(originalHTML, "text/html");
+    applyEdits(doc);
+    var html = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+    download(html, "index.html");
+    setStatus("Generated! Replace your hosted index.html with the downloaded file.", "saved");
+  }
+
+  function applyEdits(doc) {
+    // ----- Business name -----
+    var bname = getBind("businessName");
+    if (bname) {
+      // Nav logo
+      var navLogo = doc.querySelector('[data-edit="businessName"] span:last-child');
+      if (navLogo) navLogo.textContent = bname;
+      // Page <title>
+      var t = doc.querySelector("title");
+      if (t) t.textContent = bname + " — Premium Epoxy Floors, Nationwide USA";
+      // Footer logo
+      doc.querySelectorAll("footer .logo").forEach(function (l) {
+        l.innerHTML = bname.replace(/(\S+)\s+(.+)/, '$1 <span style="color:#dfff5a;">$2</span>') || bname;
+      });
+      // Copyright
+      doc.querySelectorAll("footer").forEach(function (f) {
+        var p = Array.prototype.find.call(f.querySelectorAll("p"), function (pp) { return /All rights reserved/i.test(pp.textContent); });
+        if (p) p.innerHTML = '&copy; <span id="year"></span> ' + esc(bname) + '. All rights reserved.';
+      });
+    }
+
+    // ----- Phone -----
+    var phone = getBind("phone");
+    if (phone) {
+      var digits = phone.replace(/[^0-9+]/g, "");
+      var telHref = digits.charAt(0) === "+" ? digits : "+1" + digits.replace(/^1/, "");
+      doc.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+        a.setAttribute("href", "tel:" + telHref);
+        // Replace text but keep any SVG children
+        a.childNodes.forEach(function (n) {
+          if (n.nodeType === 3) n.textContent = " " + phone + " ";
+        });
+        // If no text node found, append
+        var hasText = Array.prototype.some.call(a.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); });
+        if (!hasText) a.appendChild(doc.createTextNode(phone));
+      });
+    }
+
+    // ----- Email -----
+    var email = getBind("email");
+    if (email) {
+      doc.querySelectorAll('a[href^="mailto:"]').forEach(function (a) {
+        a.setAttribute("href", "mailto:" + email);
+        a.childNodes.forEach(function (n) {
+          if (n.nodeType === 3) n.textContent = " " + email + " ";
+        });
+        var hasText = Array.prototype.some.call(a.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); });
+        if (!hasText) a.appendChild(doc.createTextNode(email));
+      });
+    }
+
+    // ----- Service area / hours -----
+    setText(doc, '[data-edit="serviceArea"]', getBind("serviceArea"));
+    setText(doc, '[data-edit="hoursWeek"]', getBind("hoursWeek"));
+    setText(doc, '[data-edit="hoursSunday"]', getBind("hoursSunday"));
+
+    // ----- Social URLs -----
+    ["facebook", "whatsapp", "wechat", "instagram", "tiktok", "youtube", "x"].forEach(function (key) {
+      var url = getBind("social." + key);
+      if (!url) return;
+      // WhatsApp special handling — accept phone-style input and normalize to wa.me
+      if (key === "whatsapp" && url.indexOf("http") !== 0) {
+        var d = url.replace(/[^0-9]/g, "");
+        if (d) url = "https://wa.me/" + d;
+      }
+      doc.querySelectorAll('[data-social="' + key + '"], [data-social-footer="' + key + '"]').forEach(function (a) {
+        a.setAttribute("href", url);
+      });
+    });
+
+    var wechatId = getBind("social.wechatId");
+    if (wechatId) {
+      doc.querySelectorAll("[data-wechat-id]").forEach(function (el) { el.textContent = wechatId; });
+    }
+
+    // ----- Pricing -----
+    doc.querySelectorAll(".price-card").forEach(function (card, i) {
+      var name = inputVal('[data-pricing="' + i + '.name"]');
+      var amount = inputVal('[data-pricing="' + i + '.amount"]');
+      var unit = inputVal('[data-pricing="' + i + '.unit"]');
+      var features = inputVal('[data-pricing="' + i + '.features"]');
+      if (name) setEl(card.querySelector("h3"), name);
+      if (amount) setEl(card.querySelector(".price-amount"), amount);
+      if (unit) setEl(card.querySelector(".price-unit"), unit);
+      if (features) {
+        var ul = card.querySelector("ul");
+        if (ul) {
+          ul.innerHTML = "";
+          features.split(/\r?\n/).filter(function (s) { return s.trim(); }).forEach(function (line) {
+            var li = doc.createElement("li");
+            li.textContent = line.trim();
+            ul.appendChild(li);
+          });
+        }
+      }
+    });
+
+    // ----- FAQ -----
+    doc.querySelectorAll(".faq-item").forEach(function (item, i) {
+      var q = inputVal('[data-faq="' + i + '.question"]');
+      var a = inputVal('[data-faq="' + i + '.answer"]');
+      if (q) setEl(item.querySelector(".faq-q span"), q);
+      if (a) setEl(item.querySelector(".faq-a-inner"), a);
+    });
+
+    // ----- Testimonials -----
+    doc.querySelectorAll(".testimonial").forEach(function (t, i) {
+      var quote = inputVal('[data-test="' + i + '.quote"]');
+      var name = inputVal('[data-test="' + i + '.name"]');
+      var loc = inputVal('[data-test="' + i + '.location"]');
+      if (quote) setEl(t.querySelector("blockquote"), '"' + quote.replace(/^["']|["']$/g, "") + '"');
+      if (name) setEl(t.querySelector(".author-name"), name);
+      if (loc) setEl(t.querySelector(".author-loc"), loc);
+      // Update avatar initials
+      if (name) {
+        var initials = name.split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase();
+        var av = t.querySelector(".avatar");
+        if (av) av.textContent = initials;
+      }
+    });
+  }
+
+  function setText(doc, sel, val) {
+    if (!val) return;
+    doc.querySelectorAll(sel).forEach(function (el) { el.textContent = val; });
+  }
+  function setEl(el, val) { if (el && val != null) el.textContent = val; }
+  function inputVal(sel) {
+    var el = document.querySelector(sel);
+    return el ? el.value : "";
+  }
+
+  function download(content, filename) {
+    var blob = new Blob([content], { type: "text/html;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+</script>
+
+</body>
+</html>
