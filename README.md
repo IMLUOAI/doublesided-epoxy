@@ -2,17 +2,15 @@
 
 Official website for **Double-Sided ISCM LLC** — premium epoxy flooring services and DIY coating kits, serving customers nationwide across the USA.
 
-Live site: _(set this once GitHub Pages is enabled)_
-
----
+## Live site: https://doublesidedepoxy.wareplatform.com
 
 ## What's in this repo
 
-| File | What it does |
-| --- | --- |
-| `index.html` | The full marketing site. Single self-contained HTML file with inline CSS, JS, and SVG icons. No build step. |
+| File         | What it does                                                                                                                                               |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html` | The full marketing site. Single self-contained HTML file with inline CSS, JS, and SVG icons. No build step.                                                |
 | `admin.html` | Password-gated admin panel. Lets you edit contact info, social links, pricing, FAQ, and testimonials, then download a refreshed `index.html` to re-upload. |
-| `README.md` | This file. |
+| `README.md`  | This file.                                                                                                                                                 |
 
 That's it — no `node_modules`, no build pipeline, no framework. Open `index.html` in any browser and the site runs.
 
@@ -78,7 +76,10 @@ This repo is ready to deploy as a static site:
 3. Under **Source**, select `Deploy from a branch`, branch `main`, folder `/ (root)`. Save.
 4. Wait 30–60 seconds. Your site goes live at `https://<your-username>.github.io/<repo-name>/`.
 
-For a custom domain (e.g., `doublesidedepoxy.com`), add it under **Settings → Pages → Custom domain** and update your DNS records.
+This repo already includes a `CNAME` file pointing to `doublesidedepoxy.wareplatform.com`, GitHub Pages will pick it up automatically once Pages is enabled. Two things still need to happen outside this repo:
+
+1. **On GitHub:** Settings → Pages → confirm the custom domain shows `doublesidedepoxy.wareplatform.com` and enable "Enforce HTTPS" once it's available.
+2. **On your DNS provider for `wareplatform.com`:** add a `CNAME` record — host `doublesidedepoxy`, value `imluoai.github.io.` (adjust the GitHub org/user if different). Propagation can take up to a few hours.
 
 ---
 
