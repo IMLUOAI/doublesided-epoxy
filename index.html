@@ -1182,13 +1182,88 @@
         position: relative;
         overflow: hidden;
       }
-      .product-photo {
+      .carousel {
+        position: absolute;
+        inset: 0;
+      }
+      .carousel-slide {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
+        opacity: 0;
         z-index: 1;
+        transition: opacity 0.35s ease;
+      }
+      .carousel-slide.active {
+        opacity: 1;
+        z-index: 2;
+      }
+      .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(0, 0, 0, 0.45);
+        color: #fff;
+        font-size: 1.15rem;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease, background 0.2s ease;
+      }
+      .carousel-arrow:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+      .product-swatch:hover .carousel-arrow,
+      .carousel-arrow:focus-visible {
+        opacity: 1;
+      }
+      .carousel-arrow.prev {
+        left: 8px;
+      }
+      .carousel-arrow.next {
+        right: 8px;
+      }
+      .carousel-dots {
+        position: absolute;
+        bottom: 9px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        z-index: 5;
+      }
+      .carousel-dots .dot {
+        width: 6px;
+        height: 6px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.55);
+        cursor: pointer;
+        transition: width 0.2s ease, background 0.2s ease, border-radius 0.2s ease;
+      }
+      .carousel-dots .dot.active {
+        width: 16px;
+        border-radius: 3px;
+        background: #fff;
+      }
+      .carousel.single-photo .carousel-arrow,
+      .carousel.single-photo .carousel-dots {
+        display: none;
+      }
+      .carousel.no-photos {
+        display: none;
       }
       .product-swatch::after {
         content: "";
@@ -1899,7 +1974,18 @@
         <div class="products-grid">
           <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-charcoal">
-              <img class="product-photo" itemprop="image" src="products/dsep-chm-01.jpg" alt="Charcoal Metallic Pro epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
+              <div class="carousel" data-sku="DSEP-CHM-01">
+                <img class="carousel-slide active" itemprop="image" src="products/dsep-chm-01-1.jpg" alt="Charcoal Metallic Pro epoxy coating kit, photo 1" loading="lazy" data-idx="0">
+                <img class="carousel-slide" src="products/dsep-chm-01-2.jpg" alt="Charcoal Metallic Pro epoxy coating kit, photo 2" loading="lazy" data-idx="1">
+                <img class="carousel-slide" src="products/dsep-chm-01-3.jpg" alt="Charcoal Metallic Pro epoxy coating kit, photo 3" loading="lazy" data-idx="2">
+                <button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>
+                <button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>
+                <div class="carousel-dots">
+                  <button type="button" class="dot active" data-idx="0" aria-label="Photo 1"></button>
+                  <button type="button" class="dot" data-idx="1" aria-label="Photo 2"></button>
+                  <button type="button" class="dot" data-idx="2" aria-label="Photo 3"></button>
+                </div>
+              </div>
               <span class="product-finish-tag">High Gloss</span>
             </div>
             <div class="product-body">
@@ -1940,7 +2026,18 @@
 
           <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-amber">
-              <img class="product-photo" itemprop="image" src="products/dsep-acf-02.jpg" alt="Amber Chip Flake epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
+              <div class="carousel" data-sku="DSEP-ACF-02">
+                <img class="carousel-slide active" itemprop="image" src="products/dsep-acf-02-1.jpg" alt="Amber Chip Flake epoxy coating kit, photo 1" loading="lazy" data-idx="0">
+                <img class="carousel-slide" src="products/dsep-acf-02-2.jpg" alt="Amber Chip Flake epoxy coating kit, photo 2" loading="lazy" data-idx="1">
+                <img class="carousel-slide" src="products/dsep-acf-02-3.jpg" alt="Amber Chip Flake epoxy coating kit, photo 3" loading="lazy" data-idx="2">
+                <button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>
+                <button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>
+                <div class="carousel-dots">
+                  <button type="button" class="dot active" data-idx="0" aria-label="Photo 1"></button>
+                  <button type="button" class="dot" data-idx="1" aria-label="Photo 2"></button>
+                  <button type="button" class="dot" data-idx="2" aria-label="Photo 3"></button>
+                </div>
+              </div>
               <span class="product-finish-tag">Satin</span>
             </div>
             <div class="product-body">
@@ -1981,7 +2078,18 @@
 
           <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-silver">
-              <img class="product-photo" itemprop="image" src="products/dsep-sps-03.jpg" alt="Silver Pearl Solid epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
+              <div class="carousel" data-sku="DSEP-SPS-03">
+                <img class="carousel-slide active" itemprop="image" src="products/dsep-sps-03-1.jpg" alt="Silver Pearl Solid epoxy coating kit, photo 1" loading="lazy" data-idx="0">
+                <img class="carousel-slide" src="products/dsep-sps-03-2.jpg" alt="Silver Pearl Solid epoxy coating kit, photo 2" loading="lazy" data-idx="1">
+                <img class="carousel-slide" src="products/dsep-sps-03-3.jpg" alt="Silver Pearl Solid epoxy coating kit, photo 3" loading="lazy" data-idx="2">
+                <button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>
+                <button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>
+                <div class="carousel-dots">
+                  <button type="button" class="dot active" data-idx="0" aria-label="Photo 1"></button>
+                  <button type="button" class="dot" data-idx="1" aria-label="Photo 2"></button>
+                  <button type="button" class="dot" data-idx="2" aria-label="Photo 3"></button>
+                </div>
+              </div>
               <span class="product-finish-tag">Gloss</span>
             </div>
             <div class="product-body">
@@ -2022,7 +2130,18 @@
 
           <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-crimson">
-              <img class="product-photo" itemprop="image" src="products/dsep-cmb-04.jpg" alt="Crimson Marble epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
+              <div class="carousel" data-sku="DSEP-CMB-04">
+                <img class="carousel-slide active" itemprop="image" src="products/dsep-cmb-04-1.jpg" alt="Crimson Marble epoxy coating kit, photo 1" loading="lazy" data-idx="0">
+                <img class="carousel-slide" src="products/dsep-cmb-04-2.jpg" alt="Crimson Marble epoxy coating kit, photo 2" loading="lazy" data-idx="1">
+                <img class="carousel-slide" src="products/dsep-cmb-04-3.jpg" alt="Crimson Marble epoxy coating kit, photo 3" loading="lazy" data-idx="2">
+                <button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>
+                <button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>
+                <div class="carousel-dots">
+                  <button type="button" class="dot active" data-idx="0" aria-label="Photo 1"></button>
+                  <button type="button" class="dot" data-idx="1" aria-label="Photo 2"></button>
+                  <button type="button" class="dot" data-idx="2" aria-label="Photo 3"></button>
+                </div>
+              </div>
               <span class="product-finish-tag">High Gloss</span>
             </div>
             <div class="product-body">
@@ -2063,7 +2182,18 @@
 
           <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-forest">
-              <img class="product-photo" itemprop="image" src="products/dsep-fgq-05.jpg" alt="Forest Green Quartz epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
+              <div class="carousel" data-sku="DSEP-FGQ-05">
+                <img class="carousel-slide active" itemprop="image" src="products/dsep-fgq-05-1.jpg" alt="Forest Green Quartz epoxy coating kit, photo 1" loading="lazy" data-idx="0">
+                <img class="carousel-slide" src="products/dsep-fgq-05-2.jpg" alt="Forest Green Quartz epoxy coating kit, photo 2" loading="lazy" data-idx="1">
+                <img class="carousel-slide" src="products/dsep-fgq-05-3.jpg" alt="Forest Green Quartz epoxy coating kit, photo 3" loading="lazy" data-idx="2">
+                <button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>
+                <button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>
+                <div class="carousel-dots">
+                  <button type="button" class="dot active" data-idx="0" aria-label="Photo 1"></button>
+                  <button type="button" class="dot" data-idx="1" aria-label="Photo 2"></button>
+                  <button type="button" class="dot" data-idx="2" aria-label="Photo 3"></button>
+                </div>
+              </div>
               <span class="product-finish-tag">Matte</span>
             </div>
             <div class="product-body">
@@ -2104,7 +2234,18 @@
 
           <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-violet">
-              <img class="product-photo" itemprop="image" src="products/dsep-vlm-06.jpg" alt="Violet Metallic epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
+              <div class="carousel" data-sku="DSEP-VLM-06">
+                <img class="carousel-slide active" itemprop="image" src="products/dsep-vlm-06-1.jpg" alt="Violet Metallic epoxy coating kit, photo 1" loading="lazy" data-idx="0">
+                <img class="carousel-slide" src="products/dsep-vlm-06-2.jpg" alt="Violet Metallic epoxy coating kit, photo 2" loading="lazy" data-idx="1">
+                <img class="carousel-slide" src="products/dsep-vlm-06-3.jpg" alt="Violet Metallic epoxy coating kit, photo 3" loading="lazy" data-idx="2">
+                <button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>
+                <button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>
+                <div class="carousel-dots">
+                  <button type="button" class="dot active" data-idx="0" aria-label="Photo 1"></button>
+                  <button type="button" class="dot" data-idx="1" aria-label="Photo 2"></button>
+                  <button type="button" class="dot" data-idx="2" aria-label="Photo 3"></button>
+                </div>
+              </div>
               <span class="product-finish-tag">High Gloss</span>
             </div>
             <div class="product-body">
@@ -2609,6 +2750,94 @@
           el.appendChild(stripeBtn);
         });
       })();
+
+      // ---------- Product photo carousels ----------
+      // Each product has 3 slides (products/<sku>-1.jpg, -2.jpg, -3.jpg).
+      // Until real photos are uploaded, every <img> 404s, gets hidden by the
+      // onerror handler below, and the carousel quietly disappears — leaving
+      // just the colored swatch + finish tag, same as before.
+      document.querySelectorAll(".carousel").forEach(function (carousel) {
+        var slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
+        var dots = Array.from(carousel.querySelectorAll(".dot"));
+        var prevBtn = carousel.querySelector(".carousel-arrow.prev");
+        var nextBtn = carousel.querySelector(".carousel-arrow.next");
+        var current = 0;
+        var failed = new Array(slides.length).fill(false);
+
+        function validIndexes() {
+          var idxs = [];
+          slides.forEach(function (s, i) {
+            if (!failed[i]) idxs.push(i);
+          });
+          return idxs;
+        }
+
+        function refreshState() {
+          var valid = validIndexes();
+          dots.forEach(function (d, i) {
+            d.style.display = failed[i] ? "none" : "";
+          });
+          if (valid.length === 0) {
+            carousel.classList.add("no-photos");
+          } else if (valid.length === 1) {
+            carousel.classList.add("single-photo");
+          } else {
+            carousel.classList.remove("single-photo");
+          }
+        }
+
+        function showSlide(i) {
+          var valid = validIndexes();
+          if (valid.length === 0) return;
+          if (valid.indexOf(i) === -1) i = valid[0];
+          current = i;
+          slides.forEach(function (s, idx) {
+            s.classList.toggle("active", idx === current);
+          });
+          dots.forEach(function (d, idx) {
+            d.classList.toggle("active", idx === current);
+          });
+        }
+
+        function step(dir) {
+          var valid = validIndexes();
+          if (valid.length < 2) return;
+          var pos = valid.indexOf(current);
+          pos = (pos + dir + valid.length) % valid.length;
+          showSlide(valid[pos]);
+        }
+
+        slides.forEach(function (img, i) {
+          img.addEventListener("error", function () {
+            failed[i] = true;
+            img.style.display = "none";
+            refreshState();
+            if (current === i) showSlide(validIndexes()[0]);
+          });
+        });
+
+        if (prevBtn) prevBtn.addEventListener("click", function () { step(-1); });
+        if (nextBtn) nextBtn.addEventListener("click", function () { step(1); });
+        dots.forEach(function (d) {
+          d.addEventListener("click", function () {
+            showSlide(parseInt(d.getAttribute("data-idx"), 10));
+          });
+        });
+
+        // basic touch swipe
+        var touchStartX = null;
+        carousel.addEventListener("touchstart", function (e) {
+          touchStartX = e.changedTouches[0].clientX;
+        }, { passive: true });
+        carousel.addEventListener("touchend", function (e) {
+          if (touchStartX === null) return;
+          var dx = e.changedTouches[0].clientX - touchStartX;
+          if (Math.abs(dx) > 40) step(dx > 0 ? -1 : 1);
+          touchStartX = null;
+        });
+
+        refreshState();
+      });
 
       // Mobile nav toggle
       document
