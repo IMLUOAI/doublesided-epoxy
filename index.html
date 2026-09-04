@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
     <style>
       /* ---------- Base ---------- */
       *,
@@ -1181,6 +1182,14 @@
         position: relative;
         overflow: hidden;
       }
+      .product-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+      }
       .product-swatch::after {
         content: "";
         position: absolute;
@@ -1240,6 +1249,32 @@
         font-size: 0.85rem;
         color: #555;
       }
+      .product-desc {
+        font-size: 0.88rem;
+        color: #444;
+        line-height: 1.5;
+        margin: 0 0 14px;
+      }
+      .product-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .product-meta .badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 4px 9px;
+        border-radius: 3px;
+        background: #d6d6d6;
+        color: #333;
+      }
+      .product-meta .badge.in-stock {
+        background: #dfff5a;
+        color: #1f1f1f;
+      }
       .product-specs {
         display: flex;
         flex-direction: column;
@@ -1264,6 +1299,13 @@
         justify-content: center;
         padding: 12px 18px;
         font-size: 0.82rem;
+      }
+      .product-buy {
+        width: 100%;
+      }
+      .product-buy stripe-buy-button {
+        display: block;
+        width: 100%;
       }
 
       @media (max-width: 820px) {
@@ -1855,16 +1897,26 @@
           </p>
         </div>
         <div class="products-grid">
-          <div class="product-card">
+          <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-charcoal">
+              <img class="product-photo" itemprop="image" src="products/dsep-chm-01.jpg" alt="Charcoal Metallic Pro epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
               <span class="product-finish-tag">High Gloss</span>
             </div>
             <div class="product-body">
-              <div class="product-name">Charcoal Metallic Pro</div>
-              <div class="product-sku">SKU: DSEP-CHM-01</div>
-              <div class="product-price">
-                <span class="amount">$129</span>
+              <div class="product-name" itemprop="name">Charcoal Metallic Pro</div>
+              <div class="product-sku">SKU: <span itemprop="sku">DSEP-CHM-01</span></div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="amount"><span itemprop="priceCurrency" content="USD">$</span><span itemprop="price" content="129.00">129</span></span>
                 <span class="unit">/ gallon kit</span>
+                <link itemprop="availability" href="https://schema.org/InStock">
+                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
+                <meta itemprop="url" content="https://doublesidedepoxy.wareplatform.com/#products">
+              </div>
+              <p class="product-desc" itemprop="description">A deep charcoal base with hand-broadcast metallic pigments for a high-gloss, showroom-floor look.</p>
+              <div class="product-meta">
+                <span class="badge" itemprop="brand" itemscope itemtype="https://schema.org/Brand"><span itemprop="name">Double-Sided ISCM LLC</span></span>
+                <span class="badge">New</span>
+                <span class="badge in-stock">In Stock</span>
               </div>
               <div class="product-specs">
                 <div class="spec">
@@ -1880,20 +1932,32 @@
                   <span>Finish</span><strong>Metallic</strong>
                 </div>
               </div>
-              <a href="#contact" class="btn btn-primary" data-product="Charcoal Metallic Pro">Get a Quote</a>
+              <div class="product-buy" data-sku="DSEP-CHM-01">
+                <a href="#contact" class="btn btn-primary" data-product="Charcoal Metallic Pro">Get a Quote</a>
+              </div>
             </div>
           </div>
 
-          <div class="product-card">
+          <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-amber">
+              <img class="product-photo" itemprop="image" src="products/dsep-acf-02.jpg" alt="Amber Chip Flake epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
               <span class="product-finish-tag">Satin</span>
             </div>
             <div class="product-body">
-              <div class="product-name">Amber Chip Flake</div>
-              <div class="product-sku">SKU: DSEP-ACF-02</div>
-              <div class="product-price">
-                <span class="amount">$89</span>
+              <div class="product-name" itemprop="name">Amber Chip Flake</div>
+              <div class="product-sku">SKU: <span itemprop="sku">DSEP-ACF-02</span></div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="amount"><span itemprop="priceCurrency" content="USD">$</span><span itemprop="price" content="89.00">89</span></span>
                 <span class="unit">/ gallon kit</span>
+                <link itemprop="availability" href="https://schema.org/InStock">
+                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
+                <meta itemprop="url" content="https://doublesidedepoxy.wareplatform.com/#products">
+              </div>
+              <p class="product-desc" itemprop="description">Warm amber base with a full chip-flake broadcast for a durable, satin-finish garage or workshop floor.</p>
+              <div class="product-meta">
+                <span class="badge" itemprop="brand" itemscope itemtype="https://schema.org/Brand"><span itemprop="name">Double-Sided ISCM LLC</span></span>
+                <span class="badge">New</span>
+                <span class="badge in-stock">In Stock</span>
               </div>
               <div class="product-specs">
                 <div class="spec">
@@ -1909,20 +1973,32 @@
                   <span>Finish</span><strong>Flake Broadcast</strong>
                 </div>
               </div>
-              <a href="#contact" class="btn btn-primary" data-product="Amber Chip Flake">Get a Quote</a>
+              <div class="product-buy" data-sku="DSEP-ACF-02">
+                <a href="#contact" class="btn btn-primary" data-product="Amber Chip Flake">Get a Quote</a>
+              </div>
             </div>
           </div>
 
-          <div class="product-card">
+          <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-silver">
+              <img class="product-photo" itemprop="image" src="products/dsep-sps-03.jpg" alt="Silver Pearl Solid epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
               <span class="product-finish-tag">Gloss</span>
             </div>
             <div class="product-body">
-              <div class="product-name">Silver Pearl Solid</div>
-              <div class="product-sku">SKU: DSEP-SPS-03</div>
-              <div class="product-price">
-                <span class="amount">$74</span>
+              <div class="product-name" itemprop="name">Silver Pearl Solid</div>
+              <div class="product-sku">SKU: <span itemprop="sku">DSEP-SPS-03</span></div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="amount"><span itemprop="priceCurrency" content="USD">$</span><span itemprop="price" content="74.00">74</span></span>
                 <span class="unit">/ gallon kit</span>
+                <link itemprop="availability" href="https://schema.org/InStock">
+                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
+                <meta itemprop="url" content="https://doublesidedepoxy.wareplatform.com/#products">
+              </div>
+              <p class="product-desc" itemprop="description">Clean silver-pearl solid color with a high-gloss topcoat — a classic, versatile finish for any space.</p>
+              <div class="product-meta">
+                <span class="badge" itemprop="brand" itemscope itemtype="https://schema.org/Brand"><span itemprop="name">Double-Sided ISCM LLC</span></span>
+                <span class="badge">New</span>
+                <span class="badge in-stock">In Stock</span>
               </div>
               <div class="product-specs">
                 <div class="spec">
@@ -1938,20 +2014,32 @@
                   <span>Finish</span><strong>Solid Color</strong>
                 </div>
               </div>
-              <a href="#contact" class="btn btn-primary" data-product="Silver Pearl Solid">Get a Quote</a>
+              <div class="product-buy" data-sku="DSEP-SPS-03">
+                <a href="#contact" class="btn btn-primary" data-product="Silver Pearl Solid">Get a Quote</a>
+              </div>
             </div>
           </div>
 
-          <div class="product-card">
+          <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-crimson">
+              <img class="product-photo" itemprop="image" src="products/dsep-cmb-04.jpg" alt="Crimson Marble epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
               <span class="product-finish-tag">High Gloss</span>
             </div>
             <div class="product-body">
-              <div class="product-name">Crimson Marble</div>
-              <div class="product-sku">SKU: DSEP-CMB-04</div>
-              <div class="product-price">
-                <span class="amount">$149</span>
+              <div class="product-name" itemprop="name">Crimson Marble</div>
+              <div class="product-sku">SKU: <span itemprop="sku">DSEP-CMB-04</span></div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="amount"><span itemprop="priceCurrency" content="USD">$</span><span itemprop="price" content="149.00">149</span></span>
                 <span class="unit">/ gallon kit</span>
+                <link itemprop="availability" href="https://schema.org/InStock">
+                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
+                <meta itemprop="url" content="https://doublesidedepoxy.wareplatform.com/#products">
+              </div>
+              <p class="product-desc" itemprop="description">Hand-marbled crimson and gold swirls for a one-of-a-kind designer floor with a mirror-gloss topcoat.</p>
+              <div class="product-meta">
+                <span class="badge" itemprop="brand" itemscope itemtype="https://schema.org/Brand"><span itemprop="name">Double-Sided ISCM LLC</span></span>
+                <span class="badge">New</span>
+                <span class="badge in-stock">In Stock</span>
               </div>
               <div class="product-specs">
                 <div class="spec">
@@ -1967,20 +2055,32 @@
                   <span>Finish</span><strong>Hand-Marbled</strong>
                 </div>
               </div>
-              <a href="#contact" class="btn btn-primary" data-product="Crimson Marble">Get a Quote</a>
+              <div class="product-buy" data-sku="DSEP-CMB-04">
+                <a href="#contact" class="btn btn-primary" data-product="Crimson Marble">Get a Quote</a>
+              </div>
             </div>
           </div>
 
-          <div class="product-card">
+          <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-forest">
+              <img class="product-photo" itemprop="image" src="products/dsep-fgq-05.jpg" alt="Forest Green Quartz epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
               <span class="product-finish-tag">Matte</span>
             </div>
             <div class="product-body">
-              <div class="product-name">Forest Green Quartz</div>
-              <div class="product-sku">SKU: DSEP-FGQ-05</div>
-              <div class="product-price">
-                <span class="amount">$109</span>
+              <div class="product-name" itemprop="name">Forest Green Quartz</div>
+              <div class="product-sku">SKU: <span itemprop="sku">DSEP-FGQ-05</span></div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="amount"><span itemprop="priceCurrency" content="USD">$</span><span itemprop="price" content="109.00">109</span></span>
                 <span class="unit">/ gallon kit</span>
+                <link itemprop="availability" href="https://schema.org/InStock">
+                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
+                <meta itemprop="url" content="https://doublesidedepoxy.wareplatform.com/#products">
+              </div>
+              <p class="product-desc" itemprop="description">Matte forest-green quartz blend built for heavy-traffic areas that still want a refined, low-sheen look.</p>
+              <div class="product-meta">
+                <span class="badge" itemprop="brand" itemscope itemtype="https://schema.org/Brand"><span itemprop="name">Double-Sided ISCM LLC</span></span>
+                <span class="badge">New</span>
+                <span class="badge in-stock">In Stock</span>
               </div>
               <div class="product-specs">
                 <div class="spec">
@@ -1996,20 +2096,32 @@
                   <span>Finish</span><strong>Quartz Blend</strong>
                 </div>
               </div>
-              <a href="#contact" class="btn btn-primary" data-product="Forest Green Quartz">Get a Quote</a>
+              <div class="product-buy" data-sku="DSEP-FGQ-05">
+                <a href="#contact" class="btn btn-primary" data-product="Forest Green Quartz">Get a Quote</a>
+              </div>
             </div>
           </div>
 
-          <div class="product-card">
+          <div class="product-card" itemscope itemtype="https://schema.org/Product">
             <div class="product-swatch sw-violet">
+              <img class="product-photo" itemprop="image" src="products/dsep-vlm-06.jpg" alt="Violet Metallic epoxy coating kit" loading="lazy" onerror="this.style.display='none'">
               <span class="product-finish-tag">High Gloss</span>
             </div>
             <div class="product-body">
-              <div class="product-name">Violet Metallic</div>
-              <div class="product-sku">SKU: DSEP-VLM-06</div>
-              <div class="product-price">
-                <span class="amount">$139</span>
+              <div class="product-name" itemprop="name">Violet Metallic</div>
+              <div class="product-sku">SKU: <span itemprop="sku">DSEP-VLM-06</span></div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="amount"><span itemprop="priceCurrency" content="USD">$</span><span itemprop="price" content="139.00">139</span></span>
                 <span class="unit">/ gallon kit</span>
+                <link itemprop="availability" href="https://schema.org/InStock">
+                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
+                <meta itemprop="url" content="https://doublesidedepoxy.wareplatform.com/#products">
+              </div>
+              <p class="product-desc" itemprop="description">Violet and silver metallic pigments swirled for a dramatic, light-catching showroom finish.</p>
+              <div class="product-meta">
+                <span class="badge" itemprop="brand" itemscope itemtype="https://schema.org/Brand"><span itemprop="name">Double-Sided ISCM LLC</span></span>
+                <span class="badge">New</span>
+                <span class="badge in-stock">In Stock</span>
               </div>
               <div class="product-specs">
                 <div class="spec">
@@ -2025,7 +2137,9 @@
                   <span>Finish</span><strong>Metallic</strong>
                 </div>
               </div>
-              <a href="#contact" class="btn btn-primary" data-product="Violet Metallic">Get a Quote</a>
+              <div class="product-buy" data-sku="DSEP-VLM-06">
+                <a href="#contact" class="btn btn-primary" data-product="Violet Metallic">Get a Quote</a>
+              </div>
             </div>
           </div>
         </div>
@@ -2462,6 +2576,40 @@
     </footer>
 
     <script>
+      // ---------- Stripe Buy Buttons ----------
+      // 1. In the Stripe Dashboard, go to Payment Links > Buy buttons and create
+      //    one Buy Button per product kit below (test mode first, then live).
+      // 2. Paste your account's publishable key into STRIPE_PUBLISHABLE_KEY.
+      // 3. Paste each product's Buy Button ID (starts with "buy_btn_...") next
+      //    to its SKU in STRIPE_BUY_BUTTONS below.
+      // Until both are filled in, the "Get a Quote" button stays as-is and no
+      // Stripe button is injected, so the site keeps working either way.
+      var STRIPE_PUBLISHABLE_KEY = "YOUR_STRIPE_PUBLISHABLE_KEY";
+      var STRIPE_BUY_BUTTONS = {
+        "DSEP-CHM-01": "YOUR_BUY_BUTTON_ID_CHM01",
+        "DSEP-ACF-02": "YOUR_BUY_BUTTON_ID_ACF02",
+        "DSEP-SPS-03": "YOUR_BUY_BUTTON_ID_SPS03",
+        "DSEP-CMB-04": "YOUR_BUY_BUTTON_ID_CMB04",
+        "DSEP-FGQ-05": "YOUR_BUY_BUTTON_ID_FGQ05",
+        "DSEP-VLM-06": "YOUR_BUY_BUTTON_ID_VLM06"
+      };
+
+      (function () {
+        var keyReady = STRIPE_PUBLISHABLE_KEY.indexOf("YOUR_") !== 0;
+        document.querySelectorAll(".product-buy[data-sku]").forEach(function (el) {
+          var sku = el.getAttribute("data-sku");
+          var buttonId = STRIPE_BUY_BUTTONS[sku];
+          if (!keyReady || !buttonId || buttonId.indexOf("YOUR_") === 0) {
+            return; // not configured yet — leave the "Get a Quote" fallback in place
+          }
+          var stripeBtn = document.createElement("stripe-buy-button");
+          stripeBtn.setAttribute("buy-button-id", buttonId);
+          stripeBtn.setAttribute("publishable-key", STRIPE_PUBLISHABLE_KEY);
+          el.innerHTML = "";
+          el.appendChild(stripeBtn);
+        });
+      })();
+
       // Mobile nav toggle
       document
         .getElementById("menuToggle")
