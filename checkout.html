@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Cart — Double-Sided ISCM LLC</title>
+<meta name="description" content="Review your cart and check out." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1f1f1f; background: #dcdcdc; line-height: 1.5;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Nav ---------- */
+  .nav { background: #1f1f1f; padding: 18px 0; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 10px; color: #fff; }
+  .logo-img-mark { width: 28px; height: 28px; }
+  .logo-name { font-weight: 700; font-size: 1.02rem; }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-right a { color: #d4d4d4; font-size: 0.92rem; font-weight: 500; }
+  .nav-right a:hover { color: #dfff5a; }
+
+  /* ---------- Page ---------- */
+  main { flex: 1; padding: 48px 0 80px; }
+  h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 28px; }
+
+  .empty-cart {
+    background: #fff; padding: 48px 32px; text-align: center;
+  }
+  .empty-cart p { color: #555; margin-bottom: 20px; }
+  .btn {
+    display: inline-block; padding: 13px 26px; border-radius: 4px;
+    font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .btn-primary { background: #1f1f1f; color: #dfff5a; }
+  .btn-primary:hover { background: #0d0d0d; }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 88px 1fr auto auto;
+    gap: 18px;
+    align-items: center;
+    background: #fff;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .cart-item img {
+    width: 88px; height: 88px; object-fit: cover; border-radius: 4px;
+    background: #e6e6e6;
+  }
+  .cart-item .no-photo {
+    width: 88px; height: 88px; border-radius: 4px;
+    background: linear-gradient(135deg, #e8e8e8, #cfcfcf);
+  }
+  .item-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .item-unit { color: #777; font-size: 0.82rem; }
+  .item-price { font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+  .qty-control {
+    display: flex; align-items: center; gap: 6px;
+    border: 1.5px solid #ddd; border-radius: 4px; overflow: hidden;
+  }
+  .qty-control button {
+    width: 32px; height: 32px; border: none; background: #f2f2f2;
+    font-size: 1rem; cursor: pointer; font-weight: 600;
+  }
+  .qty-control button:hover { background: #e6e6e6; }
+  .qty-control input {
+    width: 40px; text-align: center; border: none; font-family: inherit;
+    font-size: 0.92rem; padding: 6px 0;
+  }
+  .remove-link {
+    color: #c33; font-size: 0.78rem; font-weight: 600; margin-top: 6px;
+    cursor: pointer; display: inline-block; background: none; border: none;
+    padding: 0; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .remove-link:hover { text-decoration: underline; }
+
+  .summary {
+    background: #fff; padding: 28px; margin-top: 20px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between; margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  .summary-row.total {
+    font-size: 1.2rem; font-weight: 800; border-top: 1.5px solid #eee;
+    padding-top: 14px; margin-top: 14px;
+  }
+  .summary-note { color: #888; font-size: 0.8rem; margin: 8px 0 20px; }
+  .checkout-btn {
+    width: 100%; padding: 16px; font-size: 0.95rem;
+  }
+  .checkout-notice {
+    background: #fff8d6; color: #5a4a00; border-left: 4px solid #f5d000;
+    padding: 14px 18px; font-size: 0.85rem; margin-top: 16px; display: none;
+  }
+  .checkout-notice.show { display: block; }
+  .checkout-notice a { color: #1f1f1f; font-weight: 700; text-decoration: underline; }
+
+  .continue-shopping { display: block; margin-top: 18px; font-size: 0.88rem; color: #555; }
+  .continue-shopping:hover { color: #1f1f1f; text-decoration: underline; }
+
+  footer { background: #1f1f1f; color: #999; text-align: center; padding: 24px; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <img src="logo-mark.png" alt="" class="logo-img-mark">
+      <span class="logo-name">Double-Sided ISCM LLC</span>
+    </a>
+    <div class="nav-right">
+      <a href="index.html#products">Continue Shopping</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>Your Cart</h1>
+
+    <div id="emptyState" class="empty-cart" style="display:none;">
+      <p>Your cart is empty.</p>
+      <a href="index.html#products" class="btn btn-primary">Browse Products</a>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div id="summarySection" class="summary" style="display:none;">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="subtotalAmount">$0.00</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span id="totalAmount">$0.00</span>
+      </div>
+      <p class="summary-note">Shipping and tax (if any) are calculated at checkout.</p>
+      <button type="button" class="btn btn-primary checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+      <div id="checkoutNotice" class="checkout-notice"></div>
+    </div>
+
+    <a href="index.html#products" class="continue-shopping">&larr; Continue shopping</a>
+  </div>
+</main>
+
+<footer>
+  &copy; <span id="year"></span> Double-Sided Epoxy Flooring Deals. All rights reserved.
+</footer>
+
+<script src="cart.js"></script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // ============================================================
+  //  Stripe Checkout hookup — fill this in once Stripe is set up.
+  //
+  //  Point STRIPE_CHECKOUT_ENDPOINT at a backend/Worker endpoint that:
+  //    1. Receives the cart (see body below)
+  //    2. Creates a Stripe Checkout Session with matching line_items
+  //    3. Returns { url: "<stripe checkout session url>" }
+  //  This page will then redirect the browser to that URL.
+  //
+  //  Until STRIPE_CHECKOUT_ENDPOINT is set, "Proceed to Checkout" falls
+  //  back to a pre-filled email so orders can still come through.
+  // ============================================================
+  var STRIPE_CHECKOUT_ENDPOINT = ""; // e.g. "https://doublesided-epoxy-admin-worker.your-subdomain.workers.dev/api/create-checkout-session"
+
+  function renderCart() {
+    var cart = window.DSEPCart.getCart();
+    var itemsWrap = document.getElementById("cartItems");
+    var emptyState = document.getElementById("emptyState");
+    var summarySection = document.getElementById("summarySection");
+
+    itemsWrap.innerHTML = "";
+
+    if (!cart.length) {
+      emptyState.style.display = "block";
+      summarySection.style.display = "none";
+      return;
+    }
+    emptyState.style.display = "none";
+    summarySection.style.display = "block";
+
+    cart.forEach(function (item) {
+      var row = document.createElement("div");
+      row.className = "cart-item";
+
+      var media = item.image
+        ? '<img src="' + esc(item.image) + '" alt="' + esc(item.name) + '" onerror="this.outerHTML=\'<div class=&quot;no-photo&quot;></div>\'">'
+        : '<div class="no-photo"></div>';
+
+      var lineTotal = (parseFloat(item.price) || 0) * item.qty;
+
+      row.innerHTML = ''
+        + media
+        + '<div>'
+        + '  <div class="item-name">' + esc(item.name) + '</div>'
+        + '  <div class="item-unit">$' + esc(item.price) + ' each' + (item.unit ? " &middot; " + esc(item.unit) : "") + '</div>'
+        + '  <button type="button" class="remove-link" data-remove="' + esc(item.sku) + '">Remove</button>'
+        + '</div>'
+        + '<div class="qty-control">'
+        + '  <button type="button" data-decr="' + esc(item.sku) + '">&minus;</button>'
+        + '  <input type="text" inputmode="numeric" value="' + item.qty + '" data-qty-input="' + esc(item.sku) + '">'
+        + '  <button type="button" data-incr="' + esc(item.sku) + '">+</button>'
+        + '</div>'
+        + '<div class="item-price">$' + lineTotal.toFixed(2) + '</div>';
+
+      itemsWrap.appendChild(row);
+    });
+
+    wireRowEvents();
+    updateSummary(cart);
+  }
+
+  function wireRowEvents() {
+    document.querySelectorAll("[data-remove]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        window.DSEPCart.removeFromCart(btn.getAttribute("data-remove"));
+        renderCart();
+      });
+    });
+    document.querySelectorAll("[data-incr]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var sku = btn.getAttribute("data-incr");
+        var cart = window.DSEPCart.getCart();
+        var item = cart.find(function (c) { return c.sku === sku; });
+        if (item) window.DSEPCart.setQty(sku, item.qty + 1);
+        renderCart();
+      });
+    });
+    document.querySelectorAll("[data-decr]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var sku = btn.getAttribute("data-decr");
+        var cart = window.DSEPCart.getCart();
+        var item = cart.find(function (c) { return c.sku === sku; });
+        if (item) window.DSEPCart.setQty(sku, item.qty - 1);
+        renderCart();
+      });
+    });
+    document.querySelectorAll("[data-qty-input]").forEach(function (input) {
+      input.addEventListener("change", function () {
+        var sku = input.getAttribute("data-qty-input");
+        window.DSEPCart.setQty(sku, parseInt(input.value, 10));
+        renderCart();
+      });
+    });
+  }
+
+  function updateSummary(cart) {
+    var total = window.DSEPCart.cartTotal();
+    document.getElementById("subtotalAmount").textContent = "$" + total.toFixed(2);
+    document.getElementById("totalAmount").textContent = "$" + total.toFixed(2);
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  document.getElementById("checkoutBtn").addEventListener("click", function () {
+    var cart = window.DSEPCart.getCart();
+    if (!cart.length) return;
+
+    if (STRIPE_CHECKOUT_ENDPOINT) {
+      var btn = document.getElementById("checkoutBtn");
+      btn.disabled = true;
+      btn.textContent = "Redirecting…";
+      fetch(STRIPE_CHECKOUT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: cart })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.url) {
+            window.location = data.url;
+          } else {
+            throw new Error(data.error || "No checkout URL returned");
+          }
+        })
+        .catch(function (err) {
+          btn.disabled = false;
+          btn.textContent = "Proceed to Checkout";
+          showNotice("Checkout failed: " + err.message);
+        });
+      return;
+    }
+
+    // Fallback while Stripe isn't wired up yet: pre-fill an order email.
+    var lines = cart.map(function (item) {
+      return "- " + item.name + " (" + item.sku + ") x" + item.qty + " — $" + (parseFloat(item.price) * item.qty).toFixed(2);
+    });
+    var total = window.DSEPCart.cartTotal().toFixed(2);
+    var body = "Order request:\n\n" + lines.join("\n") + "\n\nTotal: $" + total + "\n\nName:\nShipping Address:\nPhone:";
+    var mailto = "mailto:doublesidediscm.usa@outlook.com"
+      + "?subject=" + encodeURIComponent("Order Request — Double-Sided Epoxy")
+      + "&body=" + encodeURIComponent(body);
+
+    showNotice('Online checkout isn\'t connected yet. <a href="' + mailto + '">Click here to email us your order</a> and we\'ll follow up to arrange payment.');
+  });
+
+  function showNotice(html) {
+    var notice = document.getElementById("checkoutNotice");
+    notice.innerHTML = html;
+    notice.classList.add("show");
+  }
+
+  renderCart();
+  window.addEventListener("cart:updated", renderCart);
+</script>
+
+</body>
+</html>
