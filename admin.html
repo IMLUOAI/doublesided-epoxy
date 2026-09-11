@@ -168,6 +168,29 @@
   .feature-list-hint {
     color: #888; font-size: 0.78rem; margin-top: 4px;
   }
+
+  .spec-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .photo-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+  .photo-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px;
+    padding: 6px 10px; font-size: 0.8rem;
+  }
+  .photo-chip.removed { text-decoration: line-through; opacity: 0.5; background: #fdd; }
+  .photo-chip button {
+    border: none; background: none; cursor: pointer;
+    color: #c33; font-weight: 700; font-size: 0.9rem; padding: 0 2px;
+  }
+  .new-photo-chip { background: #eaffcf; border-color: #b9e88a; }
+  .product-card-actions {
+    display: flex; justify-content: flex-end; margin-top: 10px;
+  }
+  .btn-danger-outline {
+    background: transparent; color: #c33; border: 1.5px solid #e3a; 
+    border-color: #d99;
+  }
+  .btn-danger-outline:hover { background: #fee; }
+  .btn-small { padding: 8px 14px; font-size: 0.78rem; }
 </style>
 </head>
 <body>
@@ -209,12 +232,13 @@
     <div class="actions">
       <button class="btn btn-outline" id="resetBtn" type="button">Reset</button>
       <button class="btn btn-outline" id="saveBtn" type="button">Save Progress</button>
-      <button class="btn btn-yellow" id="generateBtn" type="button">Generate Updated Site</button>
+      <button class="btn btn-outline" id="generateBtn" type="button">Download index.html</button>
+      <button class="btn btn-yellow" id="publishBtn" type="button">Publish to Site</button>
     </div>
   </header>
 
   <div class="notice">
-    <strong>How to publish:</strong> Edit fields below → click <em>Generate Updated Site</em> → a new <code>index.html</code> downloads. Replace your hosted <code>index.html</code> with that file. Your changes are saved to this browser as you type.
+    <strong>How to publish:</strong> Edit fields below → click <em>Publish to Site</em> to commit changes directly to GitHub (Products tab includes photo uploads). <em>Download index.html</em> still works as a manual fallback if the publish Worker isn't set up yet.
   </div>
 
   <div class="container">
@@ -222,6 +246,7 @@
       <button class="tab active" data-tab="contact" type="button">Contact</button>
       <button class="tab" data-tab="social" type="button">Social</button>
       <button class="tab" data-tab="pricing" type="button">Pricing</button>
+      <button class="tab" data-tab="products" type="button">Products</button>
       <button class="tab" data-tab="faq" type="button">FAQ</button>
       <button class="tab" data-tab="testimonials" type="button">Testimonials</button>
     </div>
@@ -301,6 +326,15 @@
       <div id="pricingTiers"></div>
     </div>
 
+    <!-- ===== Products ===== -->
+    <div class="tab-pane" id="pane-products">
+      <div class="notice" style="margin-bottom:16px;">
+        <strong>Photos:</strong> upload new photos per product below — they publish alongside your text edits. Removing a photo here removes it from the carousel but doesn't delete the file from the repo (harmless, just unused).
+      </div>
+      <div id="productItems"></div>
+      <button class="btn btn-outline" id="addProductBtn" type="button" style="margin-top:8px;">+ Add New Product</button>
+    </div>
+
     <!-- ===== FAQ ===== -->
     <div class="tab-pane" id="pane-faq">
       <div id="faqItems"></div>
@@ -316,7 +350,7 @@
   <div class="footer-actions">
     <div class="container">
       <div class="save-status" id="saveStatus">Loading…</div>
-      <button class="btn btn-primary btn-large" id="generateBtnBottom" type="button">Generate Updated Site →</button>
+      <button class="btn btn-primary btn-large" id="generateBtnBottom" type="button">Publish to Site →</button>
     </div>
   </div>
 </div>
@@ -329,6 +363,12 @@
   // ============================================================
   var ADMIN_PASSWORD = "admin123";
   var STORAGE_KEY = "epoxyAdminDraft_v1";
+
+  // Paste the Worker URL here after you deploy doublesided-epoxy-admin-worker
+  // (see that project's README.md). Example:
+  // "https://doublesided-epoxy-admin-worker.your-subdomain.workers.dev/api/publish"
+  var WORKER_PUBLISH_URL = "";
+  var PUBLISH_KEY_STORAGE = "epoxyAdminPublishKey_v1";
 
   // ============================================================
   //  Gate
@@ -367,20 +407,29 @@
   var pricingData = [];
   var faqData = [];
   var testimonialData = [];
+  var productsData = [];
+  var originalCSVRows = null;
+  var SWATCH_OPTIONS = ["sw-charcoal","sw-amber","sw-silver","sw-crimson","sw-forest","sw-violet","sw-white","sw-smoke","sw-black","sw-red"];
 
   function bootAdmin() {
-    fetch("index.html", { cache: "no-store" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("HTTP " + r.status);
+    Promise.all([
+      fetch("index.html", { cache: "no-store" }).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status + " loading index.html");
         return r.text();
-      })
-      .then(function (text) {
-        originalHTML = text;
-        originalDoc = new DOMParser().parseFromString(text, "text/html");
+      }),
+      fetch("products-feed.csv", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.text() : ""; })
+        .catch(function () { return ""; })
+    ])
+      .then(function (results) {
+        originalHTML = results[0];
+        originalDoc = new DOMParser().parseFromString(originalHTML, "text/html");
+        originalCSVRows = parseCSV(results[1] || "");
         extractAllValues();
         buildPricingForm();
         buildFAQForm();
         buildTestimonialsForm();
+        buildProductsForm();
         loadDraftFromStorage();
         wireAutoSave();
         setStatus("Loaded. Edits auto-save to this browser.", "saved");
@@ -434,6 +483,43 @@
         quote: textOf(t.querySelector("blockquote")),
         name: textOf(t.querySelector(".author-name")),
         location: textOf(t.querySelector(".author-loc"))
+      });
+    });
+
+    // Products
+    originalDoc.querySelectorAll(".product-card").forEach(function (card) {
+      var carousel = card.querySelector(".carousel");
+      var sku = carousel ? carousel.getAttribute("data-sku") : "";
+      var swatchEl = card.querySelector(".product-swatch");
+      var swatchClass = "";
+      if (swatchEl) {
+        Array.prototype.forEach.call(swatchEl.classList, function (c) {
+          if (c !== "product-swatch") swatchClass = c;
+        });
+      }
+      var specs = Array.prototype.map.call(card.querySelectorAll(".product-specs .spec"), function (row) {
+        return { label: textOf(row.querySelector("span")), value: textOf(row.querySelector("strong")) };
+      });
+      var photos = carousel
+        ? Array.prototype.map.call(carousel.querySelectorAll(".carousel-slide"), function (img) {
+            return img.getAttribute("src");
+          })
+        : [];
+      productsData.push({
+        sku: sku,
+        name: textOf(card.querySelector('[itemprop="name"]')),
+        price: textOf(card.querySelector('[itemprop="price"]')),
+        unit: textOf(card.querySelector(".product-price .unit")),
+        tag: textOf(card.querySelector(".product-finish-tag")),
+        swatchClass: swatchClass,
+        brand: textOf(card.querySelector('[itemprop="brand"] [itemprop="name"]')),
+        desc: textOf(card.querySelector('[itemprop="description"]')),
+        specs: specs,
+        photos: photos,
+        removedPhotos: [],
+        newFiles: [],
+        isNew: false,
+        removed: false
       });
     });
   }
@@ -505,6 +591,162 @@
     });
   }
 
+  // ============================================================
+  //  Products form
+  // ============================================================
+  function buildProductsForm() {
+    syncProductsDataFromInputs();
+    var wrap = document.getElementById("productItems");
+    wrap.innerHTML = "";
+    productsData.forEach(function (p, i) {
+      if (p.removed) return;
+      wrap.appendChild(buildProductCard(p, i));
+    });
+  }
+
+  // Before any full rebuild of the Products form (add/remove product),
+  // pull current field values out of the DOM and back into productsData
+  // so in-progress edits on other cards aren't lost.
+  function syncProductsDataFromInputs() {
+    productsData.forEach(function (p, i) {
+      if (p.removed) return;
+      var nameEl = document.querySelector('[data-prod="' + i + '.name"]');
+      if (!nameEl) return; // this product's form hasn't been rendered yet
+      p.name = inputVal('[data-prod="' + i + '.name"]');
+      p.price = inputVal('[data-prod="' + i + '.price"]');
+      p.unit = inputVal('[data-prod="' + i + '.unit"]');
+      p.tag = inputVal('[data-prod="' + i + '.tag"]');
+      p.brand = inputVal('[data-prod="' + i + '.brand"]');
+      p.swatchClass = inputVal('[data-prod="' + i + '.swatchClass"]') || p.swatchClass;
+      p.desc = inputVal('[data-prod="' + i + '.desc"]');
+      var specs = [];
+      for (var si = 0; si < (p.specs.length || 4); si++) {
+        var label = inputVal('[data-prod-spec="' + i + '.' + si + '.label"]');
+        var value = inputVal('[data-prod-spec="' + i + '.' + si + '.value"]');
+        if (label || value) specs.push({ label: label, value: value });
+      }
+      if (specs.length) p.specs = specs;
+    });
+  }
+
+  function buildProductCard(p, i) {
+    var g = document.createElement("div");
+    g.className = "field-group";
+    g.dataset.prodIndex = i;
+
+    var swatchOptionsHtml = SWATCH_OPTIONS.map(function (c) {
+      return '<option value="' + c + '"' + (c === p.swatchClass ? " selected" : "") + '>' + c + "</option>";
+    }).join("");
+
+    var specsHtml = (p.specs.length ? p.specs : [{label:"",value:""},{label:"",value:""},{label:"",value:""},{label:"",value:""}])
+      .map(function (s, si) {
+        return '<div class="spec-row">'
+          + '<input type="text" placeholder="Label (e.g. Coverage)" data-prod-spec="' + i + '.' + si + '.label" value="' + esc(s.label) + '">'
+          + '<input type="text" placeholder="Value (e.g. 800-1,000 sq ft)" data-prod-spec="' + i + '.' + si + '.value" value="' + esc(s.value) + '">'
+          + '</div>';
+      }).join("");
+
+    g.innerHTML = ''
+      + '<h3><span class="num">' + esc(p.sku || "NEW") + '</span>' + (p.isNew ? " (new product)" : "") + '</h3>'
+      + '<div class="grid-2">'
+      + '  <div class="field"><label>SKU <span class="hint">— used in file names, e.g. DSEP-CHM-01</span></label><input type="text" data-prod="' + i + '.sku" value="' + esc(p.sku) + '"' + (p.isNew ? "" : " disabled") + '></div>'
+      + '  <div class="field"><label>Product Name</label><input type="text" data-prod="' + i + '.name" value="' + esc(p.name) + '"></div>'
+      + '</div>'
+      + '<div class="grid-2">'
+      + '  <div class="field"><label>Price <span class="hint">— numbers only, e.g. 129.00</span></label><input type="text" data-prod="' + i + '.price" value="' + esc(p.price) + '"></div>'
+      + '  <div class="field"><label>Unit Text <span class="hint">— e.g. "/ gallon kit"</span></label><input type="text" data-prod="' + i + '.unit" value="' + esc(p.unit) + '"></div>'
+      + '</div>'
+      + '<div class="grid-2">'
+      + '  <div class="field"><label>Finish Tag <span class="hint">— badge shown on the photo</span></label><input type="text" data-prod="' + i + '.tag" value="' + esc(p.tag) + '"></div>'
+      + '  <div class="field"><label>Brand</label><input type="text" data-prod="' + i + '.brand" value="' + esc(p.brand) + '"></div>'
+      + '</div>'
+      + '<div class="field"><label>Swatch Color <span class="hint">— background shown behind photos</span></label>'
+      + '  <select data-prod="' + i + '.swatchClass" style="width:100%; padding:11px 14px; border:1.5px solid #ddd; border-radius:4px; font-family:inherit; font-size:0.96rem; background:#fafafa;">' + swatchOptionsHtml + '</select>'
+      + '</div>'
+      + '<div class="field"><label>Description</label><textarea data-prod="' + i + '.desc" rows="3">' + esc(p.desc) + '</textarea></div>'
+      + '<div class="field"><label>Specs <span class="hint">— up to 4 label/value pairs</span></label><div class="prod-specs-wrap" data-specs-wrap="' + i + '">' + specsHtml + '</div></div>'
+      + '<div class="field"><label>Existing Photos</label><div class="photo-list" data-existing-photos="' + i + '"></div></div>'
+      + '<div class="field"><label>Add New Photos</label><input type="file" accept="image/*" multiple data-add-photos="' + i + '"><div class="photo-list" data-new-photos="' + i + '"></div></div>'
+      + '<div class="product-card-actions"><button type="button" class="btn btn-danger-outline btn-small" data-remove-product="' + i + '">Remove This Product</button></div>';
+
+    renderExistingPhotos(g, p, i);
+    renderNewPhotos(g, p, i);
+
+    g.querySelector('[data-add-photos="' + i + '"]').addEventListener("change", function (e) {
+      Array.prototype.forEach.call(e.target.files, function (file) {
+        p.newFiles.push(file);
+      });
+      e.target.value = "";
+      renderNewPhotos(g, p, i);
+      saveDraft();
+    });
+
+    g.querySelector('[data-remove-product="' + i + '"]').addEventListener("click", function () {
+      if (!confirm("Remove " + (p.name || p.sku || "this product") + " from the site?")) return;
+      p.removed = true;
+      buildProductsForm();
+      saveDraft();
+    });
+
+    return g;
+  }
+
+  function renderExistingPhotos(container, p, i) {
+    var wrap = container.querySelector('[data-existing-photos="' + i + '"]');
+    wrap.innerHTML = "";
+    if (!p.photos.length) {
+      wrap.innerHTML = '<span class="hint">No photos yet.</span>';
+      return;
+    }
+    p.photos.forEach(function (path) {
+      var filename = path.split("/").pop();
+      var isRemoved = p.removedPhotos.indexOf(path) !== -1;
+      var chip = document.createElement("span");
+      chip.className = "photo-chip" + (isRemoved ? " removed" : "");
+      chip.innerHTML = esc(filename) + " <button type='button'>" + (isRemoved ? "undo" : "\u00d7") + "</button>";
+      chip.querySelector("button").addEventListener("click", function () {
+        var idx = p.removedPhotos.indexOf(path);
+        if (idx === -1) p.removedPhotos.push(path);
+        else p.removedPhotos.splice(idx, 1);
+        renderExistingPhotos(container, p, i);
+        saveDraft();
+      });
+      wrap.appendChild(chip);
+    });
+  }
+
+  function renderNewPhotos(container, p, i) {
+    var wrap = container.querySelector('[data-new-photos="' + i + '"]');
+    wrap.innerHTML = "";
+    p.newFiles.forEach(function (file, fi) {
+      var chip = document.createElement("span");
+      chip.className = "photo-chip new-photo-chip";
+      chip.innerHTML = esc(file.name) + " <button type='button'>\u00d7</button>";
+      chip.querySelector("button").addEventListener("click", function () {
+        p.newFiles.splice(fi, 1);
+        renderNewPhotos(container, p, i);
+        saveDraft();
+      });
+      wrap.appendChild(chip);
+    });
+  }
+
+  document.getElementById("addProductBtn").addEventListener("click", function () {
+    var sku = prompt("New product SKU (e.g. DSEP-NEW-07):");
+    if (!sku) return;
+    sku = sku.trim().toUpperCase();
+    if (productsData.some(function (p) { return p.sku === sku; })) {
+      alert("That SKU already exists.");
+      return;
+    }
+    productsData.push({
+      sku: sku, name: "", price: "", unit: "/ unit", tag: "", swatchClass: "sw-silver",
+      brand: "ShangTianFeng", desc: "", specs: [{label:"",value:""},{label:"",value:""},{label:"",value:""},{label:"",value:""}],
+      photos: [], removedPhotos: [], newFiles: [], isNew: true, removed: false
+    });
+    buildProductsForm();
+  });
+
   function esc(s) {
     return String(s || "")
       .replace(/&/g, "&amp;")
@@ -517,9 +759,11 @@
   //  LocalStorage persistence
   // ============================================================
   function wireAutoSave() {
-    document.querySelectorAll("input, textarea").forEach(function (el) {
+    document.querySelectorAll("input, textarea, select").forEach(function (el) {
       if (el.id === "passwordInput") return;
+      if (el.type === "file") return;
       el.addEventListener("input", debounce(saveDraft, 400));
+      el.addEventListener("change", debounce(saveDraft, 400));
     });
     document.getElementById("saveBtn").addEventListener("click", function () {
       saveDraft();
@@ -535,11 +779,14 @@
 
   function collectDraft() {
     var draft = {};
-    document.querySelectorAll("[data-bind], [data-pricing], [data-faq], [data-test]").forEach(function (el) {
-      var key = el.dataset.bind || ("p:" + el.dataset.pricing) || ("f:" + el.dataset.faq) || ("t:" + el.dataset.test);
+    document.querySelectorAll("[data-bind], [data-pricing], [data-faq], [data-test], [data-prod], [data-prod-spec]").forEach(function (el) {
+      var key = "";
       if (el.dataset.pricing) key = "p:" + el.dataset.pricing;
-      if (el.dataset.faq) key = "f:" + el.dataset.faq;
-      if (el.dataset.test) key = "t:" + el.dataset.test;
+      else if (el.dataset.faq) key = "f:" + el.dataset.faq;
+      else if (el.dataset.test) key = "t:" + el.dataset.test;
+      else if (el.dataset.prodSpec) key = "ps:" + el.dataset.prodSpec;
+      else if (el.dataset.prod) key = "pr:" + el.dataset.prod;
+      else key = el.dataset.bind;
       draft[key] = el.value;
     });
     return draft;
@@ -564,6 +811,8 @@
         if (key.indexOf("p:") === 0) el = document.querySelector('[data-pricing="' + key.slice(2) + '"]');
         else if (key.indexOf("f:") === 0) el = document.querySelector('[data-faq="' + key.slice(2) + '"]');
         else if (key.indexOf("t:") === 0) el = document.querySelector('[data-test="' + key.slice(2) + '"]');
+        else if (key.indexOf("ps:") === 0) el = document.querySelector('[data-prod-spec="' + key.slice(3) + '"]');
+        else if (key.indexOf("pr:") === 0) el = document.querySelector('[data-prod="' + key.slice(3) + '"]');
         else el = document.querySelector('[data-bind="' + key + '"]');
         if (el) el.value = draft[key];
       });
@@ -585,21 +834,213 @@
   }
 
   // ============================================================
-  //  Generate updated index.html
+  //  Generate updated index.html (manual download fallback)
   // ============================================================
   document.getElementById("generateBtn").addEventListener("click", generateAndDownload);
-  document.getElementById("generateBtnBottom").addEventListener("click", generateAndDownload);
+  document.getElementById("publishBtn").addEventListener("click", publishToSite);
+  document.getElementById("generateBtnBottom").addEventListener("click", publishToSite);
+
+  function buildUpdatedHTML() {
+    var doc = new DOMParser().parseFromString(originalHTML, "text/html");
+    applyEdits(doc);
+    var html = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+    return html;
+  }
 
   function generateAndDownload() {
     if (!originalHTML) {
       alert("index.html hasn't loaded yet. Please wait.");
       return;
     }
-    var doc = new DOMParser().parseFromString(originalHTML, "text/html");
-    applyEdits(doc);
-    var html = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-    download(html, "index.html");
+    var html = buildUpdatedHTML();
+    download(html, "index.html", "text/html;charset=utf-8");
     setStatus("Generated! Replace your hosted index.html with the downloaded file.", "saved");
+  }
+
+  // ============================================================
+  //  products-feed.csv generation
+  // ============================================================
+  var CSV_COLUMNS = ["id","title","description","availability","condition","price","link","image_link","additional_image_link","brand","product_type","google_product_category","mpn"];
+
+  function buildUpdatedCSV(siteBaseUrl) {
+    var rows = [CSV_COLUMNS];
+    productsData.forEach(function (p, i) {
+      if (p.removed) return;
+      var sku = inputVal('[data-prod="' + i + '.sku"]') || p.sku;
+      var name = inputVal('[data-prod="' + i + '.name"]');
+      var price = inputVal('[data-prod="' + i + '.price"]');
+      var desc = inputVal('[data-prod="' + i + '.desc"]');
+      var brand = inputVal('[data-prod="' + i + '.brand"]');
+      var paths = finalPhotoPaths(p);
+      var imageLink = paths.length ? siteBaseUrl + paths[0] : "";
+      var additionalLinks = paths.slice(1).map(function (p2) { return siteBaseUrl + p2; }).join(",");
+
+      var existing = originalCSVRows ? originalCSVRows.find(function (r) { return r.id === sku; }) : null;
+
+      rows.push([
+        sku,
+        name,
+        desc,
+        "in stock",
+        "new",
+        (price ? price + " USD" : ""),
+        (existing && existing.link) || (siteBaseUrl + "#products"),
+        imageLink,
+        additionalLinks,
+        brand,
+        (existing && existing.product_type) || "",
+        (existing && existing.google_product_category) || "Home & Garden > Hardware > Building Materials",
+        sku
+      ]);
+    });
+    return stringifyCSV(rows);
+  }
+
+  function parseCSV(text) {
+    if (!text || !text.trim()) return [];
+    var rows = [];
+    var row = [];
+    var field = "";
+    var inQuotes = false;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+        else if (c === '"') { inQuotes = false; }
+        else { field += c; }
+      } else {
+        if (c === '"') inQuotes = true;
+        else if (c === ",") { row.push(field); field = ""; }
+        else if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
+        else if (c === "\r") { /* skip */ }
+        else field += c;
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    if (!rows.length) return [];
+    var header = rows[0];
+    return rows.slice(1).filter(function (r) { return r.length > 1 || r[0]; }).map(function (r) {
+      var obj = {};
+      header.forEach(function (h, idx) { obj[h] = r[idx] || ""; });
+      return obj;
+    });
+  }
+
+  function stringifyCSV(rows) {
+    return rows.map(function (row) {
+      return row.map(csvEscape).join(",");
+    }).join("\r\n");
+  }
+
+  function csvEscape(val) {
+    val = String(val == null ? "" : val);
+    if (/[",\n\r]/.test(val)) return '"' + val.replace(/"/g, '""') + '"';
+    return val;
+  }
+
+  // ============================================================
+  //  Publish to Site — via doublesided-epoxy-admin-worker
+  // ============================================================
+  function publishToSite() {
+    if (!originalHTML) {
+      alert("index.html hasn't loaded yet. Please wait.");
+      return;
+    }
+    if (!WORKER_PUBLISH_URL) {
+      alert("WORKER_PUBLISH_URL isn't set yet. See doublesided-epoxy-admin-worker/README.md to deploy the Worker, then paste its URL into admin.html.\n\nUsing 'Download index.html' instead for now.");
+      return;
+    }
+
+    var key = localStorage.getItem(PUBLISH_KEY_STORAGE);
+    if (!key) {
+      key = prompt("Enter your Admin Publish Key (set when you deployed the Worker):");
+      if (!key) return;
+      localStorage.setItem(PUBLISH_KEY_STORAGE, key);
+    }
+
+    setStatus("Publishing…", "");
+    var btns = [document.getElementById("publishBtn"), document.getElementById("generateBtnBottom")];
+    btns.forEach(function (b) { b.disabled = true; });
+
+    var html = buildUpdatedHTML();
+    var siteBaseUrl = location.origin + location.pathname.replace(/admin\.html$/, "");
+    var csv = buildUpdatedCSV(siteBaseUrl);
+
+    // Pair each newly uploaded file with the path it will publish to
+    // (same sequencing logic as finalPhotoPaths, kept in sync manually).
+    var imageFileToPath = [];
+    productsData.forEach(function (p) {
+      if (p.removed) return;
+      var kept = p.photos.filter(function (path) { return p.removedPhotos.indexOf(path) === -1; });
+      var slug = slugify(p.sku);
+      var maxIdx = 0;
+      kept.forEach(function (path) {
+        var m = path.match(/-(\d+)\.[a-zA-Z]+$/);
+        if (m) maxIdx = Math.max(maxIdx, parseInt(m[1], 10));
+      });
+      var next = maxIdx + 1;
+      p.newFiles.forEach(function (file) {
+        var ext = (file.name.match(/\.[a-zA-Z0-9]+$/) || [".jpg"])[0];
+        var path = "products/" + slug + "-" + (next++) + ext;
+        imageFileToPath.push({ file: file, path: path });
+      });
+    });
+
+    Promise.all(imageFileToPath.map(function (job) {
+      return fileToBase64(job.file).then(function (b64) {
+        return { path: job.path, contentBase64: b64 };
+      });
+    }))
+      .then(function (imageFiles) {
+        var files = [
+          { path: "index.html", contentBase64: utf8ToBase64(html) },
+          { path: "products-feed.csv", contentBase64: utf8ToBase64(csv) }
+        ].concat(imageFiles);
+
+        return fetch(WORKER_PUBLISH_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Admin-Key": key },
+          body: JSON.stringify({
+            commitMessage: "Update products via admin panel",
+            files: files
+          })
+        });
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        btns.forEach(function (b) { b.disabled = false; });
+        if (data.ok) {
+          setStatus("Published! Live at doublesidedepoxy.wareplatform.com in about a minute.", "saved");
+          // clear newFiles/removedPhotos now that they're committed
+          productsData.forEach(function (p) { p.newFiles = []; p.removedPhotos = []; });
+          alert("Published successfully.\nCommit: " + data.commitUrl);
+        } else {
+          setStatus("Publish failed: " + data.error, "");
+          alert("Publish failed: " + data.error + "\n\nWrong Admin Publish Key? Use Reset in your browser's localStorage or clear it and try again.");
+          if (/unauthorized/i.test(data.error || "")) localStorage.removeItem(PUBLISH_KEY_STORAGE);
+        }
+      })
+      .catch(function (err) {
+        btns.forEach(function (b) { b.disabled = false; });
+        setStatus("Publish failed: " + err.message, "");
+        alert("Publish failed: " + err.message);
+      });
+  }
+
+  function fileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var result = reader.result; // "data:<mime>;base64,XXXX"
+        resolve(result.split(",")[1]);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
   }
 
   function applyEdits(doc) {
@@ -722,6 +1163,141 @@
         if (av) av.textContent = initials;
       }
     });
+
+    applyProductEdits(doc);
+  }
+
+  // ============================================================
+  //  Products — apply edits, rebuild carousels, add/remove cards
+  // ============================================================
+  function slugify(sku) { return String(sku || "").toLowerCase(); }
+
+  function finalPhotoPaths(p) {
+    var kept = p.photos.filter(function (path) { return p.removedPhotos.indexOf(path) === -1; });
+    var slug = slugify(p.sku);
+    var maxIdx = 0;
+    kept.forEach(function (path) {
+      var m = path.match(/-(\d+)\.[a-zA-Z]+$/);
+      if (m) maxIdx = Math.max(maxIdx, parseInt(m[1], 10));
+    });
+    var next = maxIdx + 1;
+    var newPaths = p.newFiles.map(function (file) {
+      var ext = (file.name.match(/\.[a-zA-Z0-9]+$/) || [".jpg"])[0];
+      var path = "products/" + slug + "-" + (next++) + ext;
+      return path;
+    });
+    return kept.concat(newPaths);
+  }
+
+  function buildCarouselInnerHTML(sku, name, paths) {
+    var slides = paths.map(function (path, idx) {
+      var itemprop = idx === 0 ? ' itemprop="image"' : "";
+      var active = idx === 0 ? " active" : "";
+      return '<img class="carousel-slide' + active + '"' + itemprop + ' src="' + esc(path) + '" alt="' + esc(name) + ', photo ' + (idx + 1) + '" loading="lazy" data-idx="' + idx + '">';
+    }).join("");
+    var dots = paths.map(function (path, idx) {
+      return '<button type="button" class="dot' + (idx === 0 ? " active" : "") + '" data-idx="' + idx + '" aria-label="Photo ' + (idx + 1) + '"></button>';
+    }).join("");
+    return slides
+      + '<button type="button" class="carousel-arrow prev" aria-label="Previous photo">&#8249;</button>'
+      + '<button type="button" class="carousel-arrow next" aria-label="Next photo">&#8250;</button>'
+      + '<div class="carousel-dots">' + dots + '</div>';
+  }
+
+  function applyProductEdits(doc) {
+    var grid = doc.querySelector(".products-grid");
+    var templateCard = doc.querySelector(".product-card");
+
+    productsData.forEach(function (p, i) {
+      var sku = inputVal('[data-prod="' + i + '.sku"]') || p.sku;
+      var name = inputVal('[data-prod="' + i + '.name"]');
+      var price = inputVal('[data-prod="' + i + '.price"]');
+      var unit = inputVal('[data-prod="' + i + '.unit"]');
+      var tag = inputVal('[data-prod="' + i + '.tag"]');
+      var brand = inputVal('[data-prod="' + i + '.brand"]');
+      var swatchClass = inputVal('[data-prod="' + i + '.swatchClass"]') || "sw-silver";
+      var desc = inputVal('[data-prod="' + i + '.desc"]');
+      var specs = [];
+      for (var si = 0; si < (p.specs.length || 4); si++) {
+        var label = inputVal('[data-prod-spec="' + i + '.' + si + '.label"]');
+        var value = inputVal('[data-prod-spec="' + i + '.' + si + '.value"]');
+        if (label || value) specs.push({ label: label, value: value });
+      }
+
+      var card;
+      if (p.removed) {
+        if (!p.isNew) {
+          card = doc.querySelector('.carousel[data-sku="' + cssEscape(p.sku) + '"]');
+          card = card ? card.closest(".product-card") : null;
+          if (card) card.remove();
+        }
+        return; // nothing else to do for a removed product
+      }
+
+      if (p.isNew) {
+        card = templateCard.cloneNode(true);
+        grid.appendChild(card);
+      } else {
+        var carouselEl = doc.querySelector('.carousel[data-sku="' + cssEscape(p.sku) + '"]');
+        card = carouselEl ? carouselEl.closest(".product-card") : null;
+        if (!card) return;
+      }
+
+      // swatch
+      var swatchEl = card.querySelector(".product-swatch");
+      if (swatchEl) {
+        Array.prototype.slice.call(swatchEl.classList).forEach(function (c) {
+          if (c !== "product-swatch") swatchEl.classList.remove(c);
+        });
+        swatchEl.classList.add(swatchClass);
+      }
+
+      // carousel (photos)
+      var carousel = card.querySelector(".carousel");
+      var paths = finalPhotoPaths(p);
+      if (carousel) {
+        carousel.setAttribute("data-sku", sku);
+        carousel.innerHTML = buildCarouselInnerHTML(sku, name, paths);
+      }
+
+      // name / price / unit / tag / brand / desc
+      setEl(card.querySelector('[itemprop="name"]'), name);
+      var priceEl = card.querySelector('[itemprop="price"]');
+      if (priceEl) { priceEl.setAttribute("content", price); priceEl.textContent = price; }
+      var currencyEl = card.querySelector('[itemprop="priceCurrency"]');
+      if (currencyEl) currencyEl.setAttribute("content", "USD");
+      setEl(card.querySelector(".product-price .unit"), unit);
+      setEl(card.querySelector(".product-finish-tag"), tag);
+      setEl(card.querySelector('[itemprop="brand"] [itemprop="name"]'), brand);
+      setEl(card.querySelector('[itemprop="description"]'), desc);
+      var skuLabel = card.querySelector(".product-sku [itemprop='sku']") || card.querySelector('[itemprop="sku"]');
+      if (skuLabel) skuLabel.textContent = sku;
+
+      // specs
+      var specsWrap = card.querySelector(".product-specs");
+      if (specsWrap) {
+        specsWrap.innerHTML = specs.map(function (s) {
+          return '<div class="spec"><span>' + esc(s.label) + '</span><strong>' + esc(s.value) + '</strong></div>';
+        }).join("");
+      }
+
+      // sync data-* attributes on the Add to Cart button
+      var buyDiv = card.querySelector(".product-buy");
+      if (buyDiv) {
+        buyDiv.setAttribute("data-sku", sku);
+        var addToCartBtn = buyDiv.querySelector(".add-to-cart-btn");
+        if (addToCartBtn) {
+          addToCartBtn.setAttribute("data-sku", sku);
+          addToCartBtn.setAttribute("data-name", name);
+          addToCartBtn.setAttribute("data-price", price);
+          addToCartBtn.setAttribute("data-unit", unit);
+        }
+      }
+    });
+  }
+
+  function cssEscape(s) {
+    return String(s).replace(/["\\]/g, "\\$&");
   }
 
   function setText(doc, sel, val) {
@@ -734,8 +1310,8 @@
     return el ? el.value : "";
   }
 
-  function download(content, filename) {
-    var blob = new Blob([content], { type: "text/html;charset=utf-8" });
+  function download(content, filename, mimeType) {
+    var blob = new Blob([content], { type: mimeType || "text/html;charset=utf-8" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url; a.download = filename;
