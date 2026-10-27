@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Samples & Finishes — Double-Sided Epoxy Flooring</title>
-  <meta name="description" content="Browse real color charts, epoxy flake (colored sand) options, solid colors, and textured finish samples for Double-Sided ISCM LLC epoxy flooring and coatings.">
+  <title>Color Samples — Double-Sided Epoxy Flooring</title>
+  <meta name="description" content="Pick a real color sample: 20 solid floor colors, standard color card, epoxy colored sand, flake blends, and textured finishes.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -17,87 +17,90 @@
       color: #1f1f1f;
       background: #dcdcdc;
       line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
     .container { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-    .accent { background: #dfff5a; padding: 0 8px; color: #1f1f1f; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 16px 28px; border-radius: 4px; font-weight: 600;
-      font-size: 0.92rem; cursor: pointer; border: none;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-    .btn-primary { background: #1f1f1f; color: #dfff5a; }
-    .btn-primary:hover { background: #0d0d0d; transform: translateY(-1px); }
-    .nav {
-      position: sticky; top: 16px; z-index: 100; margin: 16px 24px 0;
-    }
+    .nav { position: sticky; top: 16px; z-index: 20; margin: 16px 24px 0; }
     .nav-inner {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 14px 14px 24px; background: #1f1f1f; border-radius: 6px;
-      max-width: 1340px; margin: 0 auto;
+      max-width: 1340px; margin: 0 auto; gap: 16px;
     }
-    .logo { display: flex; align-items: center; gap: 12px; color: #fff; font-weight: 700; }
+    .logo { color: #fff; font-weight: 700; }
     .nav-links { display: flex; gap: 28px; align-items: center; }
-    .nav-links a { font-size: 0.95rem; color: #d4d4d4; font-weight: 500; }
+    .nav-links a { color: #d4d4d4; font-weight: 500; font-size: 0.95rem; }
     .nav-links a:hover { color: #dfff5a; }
     .nav-cta { background: #dfff5a; color: #1f1f1f !important; padding: 10px 20px; border-radius: 4px; font-weight: 600; }
     @media (max-width: 820px) { .nav-links { display: none; } }
-    .hero-mini {
-      padding: 80px 0 40px; text-align: center;
+    header.hero { padding: 56px 0 12px; }
+    header.hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1.05; margin: 0 0 12px;
     }
-    .hero-mini h1 {
-      font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800;
-      letter-spacing: -0.025em; margin: 0 0 12px; line-height: 1.05;
-    }
-    .hero-mini p { font-size: 1.1rem; max-width: 720px; margin: 0 auto 24px; color: #333; }
-    .section { padding: 48px 0; }
-    .section h2 {
-      font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800;
-      letter-spacing: -0.02em; margin: 0 0 12px;
-    }
-    .section p.lead { max-width: 760px; margin: 0 0 28px; color: #333; }
-    .gallery {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px; margin-top: 20px;
-    }
-    .card {
-      background: #fff; border-radius: 6px; overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-    .card img { width: 100%; height: auto; display: block; }
-    .card-body { padding: 18px 20px 22px; }
-    .card h3 { margin: 0 0 8px; font-size: 1.15rem; font-weight: 700; }
-    .card p { margin: 0; font-size: 0.92rem; color: #444; }
+    header.hero p { max-width: 720px; margin: 0; color: #333; }
     .note {
-      background: #fff8d6; border-left: 4px solid #f5d000;
-      padding: 16px 20px; margin: 28px 0; font-size: 0.92rem;
+      background: #fff8d6; border-left: 4px solid #dfff5a;
+      padding: 14px 18px; margin: 22px 0 8px; font-size: 0.9rem;
     }
-    .swatch-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px; margin-top: 16px;
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0; }
+    .filters button {
+      border: 1.5px solid #1f1f1f; background: transparent; color: #1f1f1f;
+      font-family: inherit; font-weight: 600; font-size: 0.82rem;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 10px 14px; border-radius: 4px; cursor: pointer;
+    }
+    .filters button.active, .filters button:hover { background: #1f1f1f; color: #dfff5a; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      gap: 14px;
+      padding-bottom: 64px;
     }
     .swatch {
-      background: #fff; padding: 12px; border-radius: 6px; text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      background: #fff; border: 0; padding: 0; text-align: left;
+      cursor: pointer; border-radius: 6px; overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      font-family: inherit; color: inherit;
     }
-    .swatch-dot {
-      width: 100%; aspect-ratio: 1; border-radius: 50%; margin-bottom: 8px;
-      border: 1px solid #ddd;
+    .swatch:hover { transform: translateY(-2px); }
+    .thumb {
+      height: 150px; display: flex; align-items: center; justify-content: center;
+      background: #ececec;
     }
-    footer {
-      background: #1f1f1f; color: #d4d4d4; padding: 40px 0; margin-top: 40px;
-      text-align: center; font-size: 0.9rem;
+    .thumb img { width: 100%; height: 150px; object-fit: cover; }
+    .thumb.circle { background: #e4e4e4; }
+    .thumb.circle img { width: 118px; height: 118px; object-fit: cover; border-radius: 50%; }
+    .meta { padding: 10px 12px 14px; }
+    .meta .code { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; color: #666; }
+    .meta .name { font-weight: 700; font-size: 0.95rem; }
+    .meta .zh { color: #666; font-size: 0.82rem; }
+    dialog {
+      border: none; padding: 0; max-width: 520px; width: calc(100% - 32px);
+      background: #fff; border-radius: 8px;
     }
+    dialog::backdrop { background: rgba(0,0,0,0.55); }
+    .dlg { padding: 18px; }
+    .dlg img { width: 100%; max-height: 360px; object-fit: contain; background: #ececec; border-radius: 6px; }
+    .dlg h2 { margin: 14px 0 4px; font-size: 1.35rem; }
+    .dlg p { margin: 0 0 16px; color: #444; }
+    .dlg-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 16px; border-radius: 4px; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.05em; text-transform: uppercase;
+      border: none; cursor: pointer; font-family: inherit;
+    }
+    .btn-primary { background: #1f1f1f; color: #dfff5a; }
+    .btn-ghost { background: transparent; border: 1.5px solid #1f1f1f; color: #1f1f1f; }
+    footer { background: #1f1f1f; color: #d4d4d4; text-align: center; padding: 28px 16px; font-size: 0.9rem; }
     footer a { color: #dfff5a; }
   </style>
 </head>
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="index.html" class="logo">Double-Sided Epoxy</a>
+      <a class="logo" href="index.html">Double-Sided Epoxy</a>
       <div class="nav-links">
         <a href="index.html#services">Services</a>
         <a href="index.html#products">Products</a>
@@ -106,86 +109,137 @@
       </div>
     </div>
   </nav>
-
   <div class="container">
-    <header class="hero-mini">
-      <h1>Color Samples & Finishes</h1>
-      <p>Real reference charts and physical samples for water-based floor coatings, epoxy flake (colored sand), solid colors, and textured finishes. Use these to shortlist options before requesting a project quote or physical sample.</p>
-      <a href="index.html#contact" class="btn btn-primary">Request a Quote or Physical Sample</a>
+    <header class="hero">
+      <h1>Pick a color from the real samples.</h1>
+      <p>Each swatch is cropped from our physical charts — solid floor paint, the standard color card, epoxy colored sand, flake blends, and textured finishes. Tap one to request it on a quote.</p>
+      <div class="note"><strong>Screens shift color.</strong> Use this to shortlist. Ask for a physical sample plate before a full install.</div>
     </header>
-
-    <div class="note">
-      <strong>Important:</strong> Screen colors and printed charts are approximate. Lighting, substrate, application method, and clear-coat thickness can shift the final look. We recommend requesting a physical sample plate for your specific project.
+    <div class="filters" id="filters">
+      <button type="button" data-filter="all" class="active">All</button>
+      <button type="button" data-filter="solid">20 Solids</button>
+      <button type="button" data-filter="card">Standard Card</button>
+      <button type="button" data-filter="sand">Colored Sand</button>
+      <button type="button" data-filter="flake">Flake Blends</button>
+      <button type="button" data-filter="texture">Textures</button>
+      <button type="button" data-filter="plate">Sample Plates</button>
     </div>
-
-    <!-- Overview image -->
-    <section class="section">
-      <h2>Full Sample Overview</h2>
-      <p class="lead">Standard water-based floor paint color chart (20 colors), epoxy colored-sand / flake options, multi-color flake books, and physical sample plates (2026).</p>
-      <div class="card">
-        <img src="samples/color-charts-overview.jpg" alt="Overview of water-based floor paint color chart, epoxy flake samples, and physical sample plates">
-        <div class="card-body">
-          <h3>Complete Color & Sample Collection</h3>
-          <p>Includes the standard 20-color solid chart, circular epoxy flake samples, open flake books, and solid color sample plates (blue, red, gray).</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Epoxy flake / colored sand -->
-    <section class="section">
-      <h2>Epoxy Colored Sand / Flake Options</h2>
-      <p class="lead">Popular decorative flake blends (环氧彩砂). These create a multi-tone, durable, slip-resistant surface ideal for garages, basements, commercial spaces, and showrooms.</p>
-      <div class="swatch-grid">
-        <div class="swatch"><div class="swatch-dot" style="background:#e8e6e0;"></div><strong>冰灰</strong><br>Ice Gray</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#c5e8d4;"></div><strong>波澜绿</strong><br>Wave Green</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#8a8a8a;"></div><strong>中灰</strong><br>Medium Gray</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#b8e0b0;"></div><strong>苹果绿</strong><br>Apple Green</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#4a4a4a;"></div><strong>深灰</strong><br>Dark Gray</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#f5f5f0;"></div><strong>乳白</strong><br>Milky White</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#a0a8a8;"></div><strong>海灰</strong><br>Sea Gray</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#6ec4e8;"></div><strong>天酷蓝</strong><br>Sky Cool Blue</div>
-        <div class="swatch"><div class="swatch-dot" style="background:#c8c8c8;"></div><strong>淡灰</strong><br>Light Gray</div>
-      </div>
-    </section>
-
-    <!-- Textured finishes -->
-    <section class="section">
-      <h2>Textured Finish Samples</h2>
-      <p class="lead">Real application boards showing color + surface texture. Edges reveal the layered system (primer / base coats under the finish coat). Textured surfaces improve slip resistance for garages, workshops, and wet areas.</p>
-      <div class="card">
-        <img src="samples/textured-finish-samples.jpg" alt="Four textured epoxy finish samples: light blue-gray, bright blue, off-white, and medium gray">
-        <div class="card-body">
-          <h3>Texture & Color Reference Boards</h3>
-          <p>
-            Top-left: Light blue-gray textured<br>
-            Top-right: Bright blue textured<br>
-            Bottom-left: Off-white / light gray (smoother)<br>
-            Bottom-right: Medium gray textured
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Solid colors note -->
-    <section class="section">
-      <h2>Solid Color Charts & Sample Plates</h2>
-      <p class="lead">The standard 20-color water-based floor paint chart covers common industrial and commercial solids (reds, yellows, greens, blues, grays, black, white). Physical sample plates (blue, red, gray) demonstrate the finished look and importance of approving a sample before full application.</p>
-      <p>Solid colors are ideal for clean, modern, or high-visibility areas. Pair with a clear topcoat for extra durability and chemical resistance.</p>
-    </section>
-
-    <section class="section" style="text-align:center; padding-bottom:60px;">
-      <h2>Ready to Choose?</h2>
-      <p class="lead">Tell us the space type (garage, basement, commercial, outdoor), approximate square footage, preferred style (solid / flake / textured), and any color preferences. We’ll recommend the best system and can ship a physical sample.</p>
-      <a href="index.html#contact" class="btn btn-primary">Get a Free Quote</a>
-      <a href="index.html#products" class="btn" style="margin-left:12px; background:#fff; border:1.5px solid #1f1f1f;">View Products</a>
-    </section>
+    <div class="grid" id="grid"></div>
   </div>
-
   <footer>
-    <div class="container">
-      <p>Double-Sided ISCM LLC — Premium Epoxy Flooring, Nationwide USA</p>
-      <p><a href="index.html">← Back to Main Site</a> · <a href="admin.html">Admin</a></p>
-    </div>
+    <a href="index.html">Back to the main site</a>
+    · Photos of the full charts are in the original sample shots on this page’s source files.
   </footer>
+  <dialog id="dlg">
+    <div class="dlg">
+      <img id="dlgImg" alt="">
+      <h2 id="dlgName"></h2>
+      <p id="dlgMeta"></p>
+      <div class="dlg-actions">
+        <a class="btn btn-primary" id="dlgQuote" href="index.html#contact">Request this color</a>
+        <button type="button" class="btn btn-ghost" id="dlgClose">Close</button>
+      </div>
+    </div>
+  </dialog>
+  <script>
+    var COLORS = [
+      {g:"solid", code:"R01", name:"Iron Red", zh:"铁红", src:"samples/colors/solid-r01.jpg"},
+      {g:"solid", code:"G04", name:"Medium Green", zh:"中绿", src:"samples/colors/solid-g04.jpg"},
+      {g:"solid", code:"Y11", name:"Cream White", zh:"乳白", src:"samples/colors/solid-y11.jpg"},
+      {g:"solid", code:"GY10", name:"Machine Tool Grey", zh:"机床灰", src:"samples/colors/solid-gy10.jpg"},
+      {g:"solid", code:"B02", name:"Medium Grey", zh:"中灰", src:"samples/colors/solid-b02.jpg"},
+      {g:"solid", code:"Y07", name:"Medium Yellow", zh:"中黄", src:"samples/colors/solid-y07.jpg"},
+      {g:"solid", code:"GY02", name:"Spin Green", zh:"纺绿", src:"samples/colors/solid-gy02.jpg"},
+      {g:"solid", code:"R03", name:"Bright Red", zh:"大红", src:"samples/colors/solid-r03.jpg"},
+      {g:"solid", code:"GY09", name:"Ice Grey", zh:"冰灰", src:"samples/colors/solid-gy09.jpg"},
+      {g:"solid", code:"B03", name:"Light Grey", zh:"淡灰色", src:"samples/colors/solid-b03.jpg"},
+      {g:"solid", code:"PB05", name:"Sea Blue", zh:"海蓝", src:"samples/colors/solid-pb05.jpg"},
+      {g:"solid", code:"G09", name:"Deep Pea Green", zh:"深豆绿", src:"samples/colors/solid-g09.jpg"},
+      {g:"solid", code:"Y12", name:"Beige", zh:"米黄", src:"samples/colors/solid-y12.jpg"},
+      {g:"solid", code:"Y13", name:"Pale Yellow-Grey", zh:"淡黄灰", src:"samples/colors/solid-y13.jpg"},
+      {g:"solid", code:"B04", name:"Silver Grey", zh:"银灰", src:"samples/colors/solid-b04.jpg"},
+      {g:"solid", code:"B01", name:"Bright Blue", zh:"鲜蓝", src:"samples/colors/solid-b01.jpg"},
+      {g:"solid", code:"G10", name:"Aircraft Grey", zh:"飞机灰", src:"samples/colors/solid-g10.jpg"},
+      {g:"solid", code:"Y06", name:"Pale Yellow", zh:"淡黄", src:"samples/colors/solid-y06.jpg"},
+      {g:"solid", code:"YR05", name:"Brown", zh:"棕", src:"samples/colors/solid-yr05.jpg"},
+      {g:"solid", code:"B05", name:"Deep Sea Grey", zh:"深海灰", src:"samples/colors/solid-b05.jpg"},
+      {g:"card", code:"STD-GREEN", name:"Standard Green", zh:"标准绿", src:"samples/colors/std-green.jpg"},
+      {g:"card", code:"RED", name:"Red", zh:"红色", src:"samples/colors/card-red.jpg"},
+      {g:"card", code:"LT-GREY", name:"Light Grey", zh:"浅灰", src:"samples/colors/card-light-grey.jpg"},
+      {g:"card", code:"WHITE", name:"White", zh:"白色", src:"samples/colors/card-white.jpg"},
+      {g:"card", code:"YELLOW", name:"Yellow", zh:"黄色", src:"samples/colors/card-yellow.jpg"},
+      {g:"card", code:"LAKE-BLUE", name:"Lake Blue", zh:"湖蓝", src:"samples/colors/card-lake-blue.jpg"},
+      {g:"card", code:"MED-GREY", name:"Medium Grey", zh:"中灰", src:"samples/colors/card-medium-grey.jpg"},
+      {g:"card", code:"MISTY", name:"Misty Grey", zh:"烟雨灰", src:"samples/colors/card-misty-grey.jpg"},
+      {g:"card", code:"WIND-BLUE", name:"Wind Blue", zh:"风蓝", src:"samples/colors/card-wind-blue.jpg"},
+      {g:"card", code:"OFF-WHITE", name:"Off-White", zh:"米白", src:"samples/colors/card-off-white.jpg"},
+      {g:"card", code:"DK-GREY", name:"Dark Grey", zh:"深灰", src:"samples/colors/card-dark-grey.jpg"},
+      {g:"card", code:"BLACK", name:"Black", zh:"黑色", src:"samples/colors/card-black.jpg"},
+      {g:"sand", code:"SAND-ICE", name:"Ice Gray", zh:"冰灰", src:"samples/colors/sand-ice-gray.png", circle:true},
+      {g:"sand", code:"SAND-LAKE", name:"Light Lake Green", zh:"淡湖绿", src:"samples/colors/sand-light-lake-green.png", circle:true},
+      {g:"sand", code:"SAND-MED", name:"Medium Gray", zh:"中灰", src:"samples/colors/sand-medium-gray.png", circle:true},
+      {g:"sand", code:"SAND-APPLE", name:"Apple Green", zh:"苹果绿", src:"samples/colors/sand-apple-green.png", circle:true},
+      {g:"sand", code:"SAND-DARK", name:"Dark Gray", zh:"深灰", src:"samples/colors/sand-dark-gray.png", circle:true},
+      {g:"sand", code:"SAND-MILK", name:"Milky White", zh:"乳白", src:"samples/colors/sand-milky-white.png", circle:true},
+      {g:"sand", code:"SAND-SEA", name:"Sea Gray", zh:"海灰", src:"samples/colors/sand-sea-gray.png", circle:true},
+      {g:"sand", code:"SAND-SKY", name:"Phthalo Sky Blue", zh:"天酞蓝", src:"samples/colors/sand-phthalo-sky-blue.png", circle:true},
+      {g:"sand", code:"SAND-LT", name:"Light Gray", zh:"淡灰", src:"samples/colors/sand-light-gray.png", circle:true},
+      {g:"flake", code:"DP19 3-5", name:"Ivory, black & tan", zh:"彩片", src:"samples/colors/flake-dp19.jpg"},
+      {g:"flake", code:"DP17 3-5", name:"Ivory, gold & burgundy", zh:"彩片", src:"samples/colors/flake-dp17.jpg"},
+      {g:"flake", code:"DP20", name:"Green, black & white", zh:"彩片", src:"samples/colors/flake-dp20.jpg"},
+      {g:"flake", code:"DP18 3-5", name:"Black & white", zh:"彩片", src:"samples/colors/flake-dp18.jpg"},
+      {g:"flake", code:"DP23 3-5", name:"White, sparse black", zh:"彩片", src:"samples/colors/flake-dp23.jpg"},
+      {g:"flake", code:"DP21 3-5", name:"Gold, black & white", zh:"彩片", src:"samples/colors/flake-dp21.jpg"},
+      {g:"flake", code:"DP24 3-5", name:"Blue, gold & black", zh:"彩片", src:"samples/colors/flake-dp24.jpg"},
+      {g:"flake", code:"DP22 3-5", name:"Red, black & white", zh:"彩片", src:"samples/colors/flake-dp22.jpg"},
+      {g:"texture", code:"TEX-BLUE-GRAY", name:"Light blue-gray textured", zh:"纹理", src:"samples/colors/tex-blue-gray.jpg"},
+      {g:"texture", code:"TEX-BRIGHT-BLUE", name:"Bright blue textured", zh:"纹理", src:"samples/colors/tex-bright-blue.jpg"},
+      {g:"texture", code:"TEX-OFF-WHITE", name:"Off-white smooth", zh:"纹理", src:"samples/colors/tex-off-white.jpg"},
+      {g:"texture", code:"TEX-MED-GRAY", name:"Medium gray textured", zh:"纹理", src:"samples/colors/tex-medium-gray.jpg"},
+      {g:"plate", code:"PLATE-BLUE", name:"Blue sample plate", zh:"样板", src:"samples/colors/plate-blue.jpg"},
+      {g:"plate", code:"PLATE-GRAY", name:"Gray sample plate", zh:"样板", src:"samples/colors/plate-gray.jpg"},
+      {g:"plate", code:"PLATE-RED", name:"Red sample plate", zh:"样板", src:"samples/colors/plate-red.jpg"}
+    ];
+
+    var grid = document.getElementById("grid");
+    var filter = "all";
+
+    function label(c) { return c.code + " " + c.name + (c.zh ? " (" + c.zh + ")" : ""); }
+
+    function render() {
+      grid.innerHTML = "";
+      COLORS.forEach(function (c, i) {
+        if (filter !== "all" && c.g !== filter) return;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "swatch";
+        btn.innerHTML =
+          '<div class="thumb' + (c.circle ? " circle" : "") + '"><img src="' + c.src + '" alt="' + label(c) + '"></div>' +
+          '<div class="meta"><div class="code">' + c.code + '</div><div class="name">' + c.name + '</div><div class="zh">' + c.zh + '</div></div>';
+        btn.addEventListener("click", function () { openColor(c); });
+        grid.appendChild(btn);
+      });
+    }
+
+    var dlg = document.getElementById("dlg");
+    function openColor(c) {
+      document.getElementById("dlgImg").src = c.src;
+      document.getElementById("dlgImg").alt = label(c);
+      document.getElementById("dlgName").textContent = c.name;
+      document.getElementById("dlgMeta").textContent = c.code + " · " + c.zh;
+      document.getElementById("dlgQuote").href = "index.html?color=" + encodeURIComponent(label(c)) + "#contact";
+      dlg.showModal();
+    }
+    document.getElementById("dlgClose").addEventListener("click", function () { dlg.close(); });
+    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+    document.getElementById("filters").addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      filter = b.getAttribute("data-filter");
+      document.querySelectorAll(".filters button").forEach(function (el) { el.classList.toggle("active", el === b); });
+      render();
+    });
+    render();
+  </script>
 </body>
 </html>

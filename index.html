@@ -2909,6 +2909,13 @@ CERAMIC PAINT ANTICORROSIVE: Bathtub paint has the anticorrosive ability, effect
       (function () {
         var form = document.getElementById("contactForm");
         if (!form) return;
+        var colorPick = new URLSearchParams(location.search).get("color");
+        if (colorPick) {
+          var message = document.getElementById("message");
+          if (message && !message.value) {
+            message.value = "Color requested: " + colorPick + ". Please confirm this color and send a physical sample if possible.";
+          }
+        }
         form.addEventListener("submit", function (e) {
           e.preventDefault();
           var msgOk = document.getElementById("formMessage");
