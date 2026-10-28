@@ -1,6 +1,6 @@
 # Double-Sided Epoxy Flooring — Marketing Website
 
-Official website for **Double-Sided ISCM LLC** — premium epoxy flooring services and DIY coating kits, serving customers nationwide across the USA.
+Official website for **Double-Sided Epoxy** — premium epoxy flooring services and DIY coating kits, serving customers nationwide across the USA.
 
 ## Live site: https://doublesidedepoxy.wareplatform.com
 
@@ -118,4 +118,4 @@ For business inquiries: see the contact section on the live site or reach out di
 
 ## License
 
-© Double-Sided ISCM LLC. All rights reserved.
+© Double-Sided Epoxy. All rights reserved.
