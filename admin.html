@@ -1206,7 +1206,14 @@
 
   function applyProductEdits(doc) {
     var grid = doc.querySelector(".products-grid");
-    var templateCard = doc.querySelector(".product-card");
+    // Match cards by position, not SKU. Two cards can share a SKU (a duplicate
+    // listing). querySelector would always hit the first one and wipe its photos.
+    var existingCards = grid
+      ? Array.prototype.filter.call(grid.children, function (el) {
+          return el.classList && el.classList.contains("product-card");
+        })
+      : [];
+    var templateCard = existingCards.length ? existingCards[0].cloneNode(true) : null;
 
     productsData.forEach(function (p, i) {
       var sku = inputVal('[data-prod="' + i + '.sku"]') || p.sku;
@@ -1226,20 +1233,16 @@
 
       var card;
       if (p.removed) {
-        if (!p.isNew) {
-          card = doc.querySelector('.carousel[data-sku="' + cssEscape(p.sku) + '"]');
-          card = card ? card.closest(".product-card") : null;
-          if (card) card.remove();
-        }
+        if (!p.isNew && existingCards[i]) existingCards[i].remove();
         return; // nothing else to do for a removed product
       }
 
       if (p.isNew) {
+        if (!templateCard || !grid) return;
         card = templateCard.cloneNode(true);
         grid.appendChild(card);
       } else {
-        var carouselEl = doc.querySelector('.carousel[data-sku="' + cssEscape(p.sku) + '"]');
-        card = carouselEl ? carouselEl.closest(".product-card") : null;
+        card = existingCards[i];
         if (!card) return;
       }
 
